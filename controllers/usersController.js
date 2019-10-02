@@ -1,13 +1,7 @@
 const User = require("../models/user");
 const catchAsync = require("../utiles/catchAsync");
+const handlersFactory = require("./handlersFactory");
 
-module.exports.createUser = catchAsync(async (req, res, next) => {
-  let newUser = new User(req.body);
-  await newUser.save();
-  res.send("User created");
-});
+module.exports.createUser = handlersFactory.createOne(User);
 
-module.exports.findAllUsers = catchAsync(async (req, res, next) => {
-  let users = await User.find({});
-  res.send(users);
-});
+module.exports.findAllUsers = handlersFactory.getAll(User);
