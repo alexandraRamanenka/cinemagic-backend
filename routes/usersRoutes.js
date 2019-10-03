@@ -1,11 +1,15 @@
 const router = require("express").Router();
 const { createUser, findAllUsers } = require("../controllers/usersController");
-const { signup, login } = require("../controllers/authController");
+const {
+  signup,
+  login,
+  authenticate
+} = require("../controllers/authController");
 
 router
   .route("/")
   .post(createUser)
-  .get(findAllUsers);
+  .get(authenticate, findAllUsers);
 
 router.post("/signup", signup);
 router.post("/login", login);

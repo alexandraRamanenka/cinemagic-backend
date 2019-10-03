@@ -4,13 +4,17 @@ const AppError = require("../utiles/appError");
 const cleanUserFields = require("./usersController").cleanUserFields;
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const passport = require("passport");
+const { Strategy, ExtractJwt } = require("passport-jwt");
+
+const jwtOpt = {
+  algorithm: "RS256",
+  expiresIn: process.env.JWT_EXPIRES_IN
+};
 
 const getToken = user => {
   const secret = fs.readFileSync("jwtRS256.key");
-  const token = jwt.sign({ user: { id: user._id } }, secret, {
-    algorithm: "RS256",
-    expiresIn: process.env.JWT_EXPIRES_IN
-  });
+  const token = jwt.sign({ id: user._id }, secret, jwtOpt);
   return token;
 };
 
@@ -58,3 +62,28 @@ module.exports.login = catchAsync(async (req, res, next) => {
 
   sendToken(user, 200, res);
 });
+
+const passportOpt = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: fs.readFileSync("jwtRS256.key.pub"),
+  jsonWebTokenOptions: jwtOpt
+};
+
+passport.use(
+  new Strategy(passportOpt, function(payload, done) {
+    User.findOne({ _id: payload.id }, (err, user) => {
+      if (err) {
+        return done(err, false);
+      }
+      console.log(payload);
+      console.log(payload.id);
+      if (!user) {
+        return done(new AppError("invalid token, log in again", 401), false);
+      }
+      user.password = undefined;
+      return done(null, user);
+    });
+  })
+);
+
+module.exports.authenticate = passport.authenticate("jwt", { session: false });
