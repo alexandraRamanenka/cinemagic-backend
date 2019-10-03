@@ -1,9 +1,9 @@
 const AppError = require("../utiles/appError");
 const catchAsync = require("../utiles/catchAsync");
 
-module.exports.createOne = Model => {
+module.exports.createOne = (Model, fieldsCleaner) => {
   return catchAsync(async (req, res, next) => {
-    const document = await Model.create(req.body);
+    const document = await Model.create(fieldsCleaner(req));
 
     res.status(201).send({
       status: "success",

@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+const catchAsync = require("../utiles/catchAsync");
+const AppError = require("../utiles/appError");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
   login: { type: String, required: [true, "Login is required"], unique: true },
@@ -21,5 +24,14 @@ const userSchema = new mongoose.Schema({
 userSchema.path("passwordConfirmation").validate(function(value) {
   return this.password === value;
 }, "Passwords are not equal");
+
+userSchema.pre("save", async function(next) {
+  if (!this.isModified("password")) return next();
+
+  const salt = await bcrypt.genSalt(12);
+  this.password = await bcrypt.hash(this.password, salt);
+  this.passwordConfirmation = undefined;
+  next();
+});
 
 module.exports = new mongoose.model("User", userSchema);
