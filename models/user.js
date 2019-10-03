@@ -26,6 +26,7 @@ userSchema.path("passwordConfirmation").validate(function(value) {
 userSchema.methods.isCorrectPassword = function(password) {
   return bcrypt.compareSync(password, this.password);
 };
+
 userSchema.pre("save", async function(next) {
   if (!this.isModified("password")) return next();
 
