@@ -27,3 +27,25 @@ module.exports.signup = catchAsync(async (req, res, next) => {
     }
   });
 });
+
+module.exports.login = catchAsync(async (req, res, next) => {
+  const { password, login } = req.body;
+
+  if (!password || !login) {
+    return next(new AppError("Login and password required", 401));
+  }
+
+  const user = await User.findOne({ login });
+  if (!user || !user.isCorrectPassword(password)) {
+    return next(new AppError("Invalid credentials", 401));
+  }
+
+  user.password = undefined;
+  const token = getToken({ id: user._id });
+  res.status(200).json({
+    token,
+    data: {
+      user
+    }
+  });
+});

@@ -5,7 +5,7 @@ module.exports.createOne = Model => {
   return catchAsync(async (req, res, next) => {
     const document = await Model.create(req.body);
 
-    res.status(201).send({
+    res.status(201).json({
       status: "success",
       data: document
     });
@@ -16,7 +16,7 @@ module.exports.getAll = Model => {
   return catchAsync(async (req, res, next) => {
     const documents = await Model.find({});
 
-    res.status(200).send({
+    res.status(200).json({
       status: "success",
       data: documents
     });
