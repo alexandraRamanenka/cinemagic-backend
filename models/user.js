@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const catchAsync = require("../utiles/catchAsync");
-const AppError = require("../utiles/appError");
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
