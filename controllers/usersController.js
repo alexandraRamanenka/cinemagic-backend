@@ -15,3 +15,5 @@ module.exports.cleanUserFields = req => {
 module.exports.createUser = handlersFactory.createOne(User);
 
 module.exports.findAllUsers = handlersFactory.getAll(User);
+
+module.exports.getUserById = handlersFactory.getOne(User, "userId");
