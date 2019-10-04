@@ -1,5 +1,6 @@
 const AppError = require("../utiles/appError");
 const catchAsync = require("../utiles/catchAsync");
+const ApiFeatures = require("../utiles/apiFeatures");
 
 module.exports.createOne = Model => {
   return catchAsync(async (req, res, next) => {
@@ -14,7 +15,8 @@ module.exports.createOne = Model => {
 
 module.exports.getAll = Model => {
   return catchAsync(async (req, res, next) => {
-    const documents = await Model.find({});
+    const features = new ApiFeatures(Model.find(), req.query).filter();
+    const documents = await features.query;
 
     res.status(200).json({
       status: "success",
