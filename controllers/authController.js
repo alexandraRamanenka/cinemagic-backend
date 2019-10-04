@@ -88,7 +88,7 @@ module.exports.authenticate = passport.authenticate("jwt", { session: false });
 
 module.exports.restrictTo = roles => {
   return (req, res, next) => {
-    if (roles.length && !roles.includes(req.role)) {
+    if (roles.length && !roles.includes(req.user.role)) {
       return next(new AppError("Permission denied", 401));
     }
     next();
