@@ -43,7 +43,6 @@ module.exports.deleteOne = (Model, key) => {
 module.exports.getOne = (Model, key, filterFunc) => {
   return catchAsync(async (req, res, next) => {
     let document = await Model.findById(req.params[key]);
-
     if (!document) {
       return next(
         new AppError(`Document with id ${req.params[key]} not found`, 404)

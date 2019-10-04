@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const catchAsync = require("../utiles/catchAsync");
+const AppError = require("../utiles/appError");
 const handlersFactory = require("./handlersFactory");
 
 module.exports.cleanUserFields = req => {
@@ -42,6 +43,19 @@ module.exports.getUserById = handlersFactory.getOne(
 );
 
 module.exports.deleteUser = handlersFactory.deleteOne(User, "userId");
-module.exports.updateUser = handlersFactory.updateOne(User, "userId", [
-  "password"
-]);
+module.exports.updateUser = handlersFactory.updateOne(User, "userId");
+module.exports.getCurrentUser = catchAsync(async (req, res, next) => {
+  if (!req.user) {
+    return next(new AppError("Please, log in or sign up", 401));
+  }
+
+  const user = await User.findById(req.user.id.toString());
+  if (!user) {
+    return next(new AppError("User is no longer exists", 404));
+  }
+
+  res.status(200).json({
+    status: "succcess",
+    user
+  });
+});

@@ -4,7 +4,8 @@ const {
   findAllUsers,
   getUserById,
   deleteUser,
-  updateUser
+  updateUser,
+  getCurrentUser
 } = require("../controllers/usersController");
 const {
   signup,
@@ -18,6 +19,7 @@ router
   .post(authenticate, restrictTo(["admin"]), createUser)
   .get(authenticate, restrictTo(["admin"]), findAllUsers);
 
+router.route("/me").get(authenticate, getCurrentUser);
 router
   .route("/:userId")
   .get(authenticate, getUserById)
@@ -26,4 +28,5 @@ router
 
 router.post("/signup", signup);
 router.post("/login", login);
+
 module.exports = router;
