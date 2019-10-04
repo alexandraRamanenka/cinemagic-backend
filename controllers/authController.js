@@ -14,7 +14,7 @@ const jwtOpt = {
 
 const getToken = user => {
   const secret = fs.readFileSync("jwtRS256.key");
-  const token = jwt.sign({ id: user._id }, secret, jwtOpt);
+  const token = jwt.sign({ id: user._id, role: user.role }, secret, jwtOpt);
   return token;
 };
 
@@ -75,8 +75,6 @@ passport.use(
       if (err) {
         return done(err, false);
       }
-      console.log(payload);
-      console.log(payload.id);
       if (!user) {
         return done(new AppError("invalid token, log in again", 401), false);
       }
@@ -87,3 +85,12 @@ passport.use(
 );
 
 module.exports.authenticate = passport.authenticate("jwt", { session: false });
+
+module.exports.restrictTo = roles => {
+  return (req, res, next) => {
+    if (roles.length && !roles.includes(req.role)) {
+      return next(new AppError("Permission denied", 401));
+    }
+    next();
+  };
+};

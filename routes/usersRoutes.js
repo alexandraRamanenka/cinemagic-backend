@@ -3,12 +3,13 @@ const { createUser, findAllUsers } = require("../controllers/usersController");
 const {
   signup,
   login,
-  authenticate
+  authenticate,
+  restrictTo
 } = require("../controllers/authController");
 
 router
   .route("/")
-  .post(createUser)
+  .post(authenticate, restrictTo(["admin"]), createUser)
   .get(authenticate, findAllUsers);
 
 router.post("/signup", signup);
