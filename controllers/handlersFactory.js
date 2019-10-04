@@ -43,6 +43,12 @@ module.exports.deleteOne = (Model, key) => {
 module.exports.getOne = (Model, key, filterFunc) => {
   return catchAsync(async (req, res, next) => {
     let document = await Model.findById(req.params[key]);
+
+    if (!document) {
+      return next(
+        new AppError(`Document with id ${req.params[key]} not found`, 404)
+      );
+    }
     const userRole = req.user ? req.user.role : "guest";
     document = filterFunc(document, userRole);
     res.status(200).json({
