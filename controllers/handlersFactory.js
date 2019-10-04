@@ -49,3 +49,29 @@ module.exports.getOne = (Model, key, filterFunc) => {
     });
   });
 };
+
+module.exports.updateOne = (Model, key, forbiddenFields) => {
+  return catchAsync(async (req, res, next) => {
+    for (let key of forbiddenFields) {
+      if (req.body[key]) {
+        delete req.body[key];
+      }
+    }
+    const document = await Model.findOneAndUpdate(
+      { _id: req.params[key] },
+      req.body,
+      { new: true }
+    );
+
+    if (!document) {
+      return next(
+        new AppError(`Document with id ${req.params[key]} not found`, 404)
+      );
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: document
+    });
+  });
+};

@@ -42,3 +42,6 @@ module.exports.getUserById = handlersFactory.getOne(
 );
 
 module.exports.deleteUser = handlersFactory.deleteOne(User, "userId");
+module.exports.updateUser = handlersFactory.updateOne(User, "userId", [
+  "password"
+]);

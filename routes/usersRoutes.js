@@ -3,7 +3,8 @@ const {
   createUser,
   findAllUsers,
   getUserById,
-  deleteUser
+  deleteUser,
+  updateUser
 } = require("../controllers/usersController");
 const {
   signup,
@@ -20,7 +21,8 @@ router
 router
   .route("/:userId")
   .get(authenticate, getUserById)
-  .delete(authenticate, restrictTo(["admin"]), deleteUser);
+  .delete(authenticate, restrictTo(["admin"]), deleteUser)
+  .patch(authenticate, restrictTo(["admin"]), updateUser);
 
 router.post("/signup", signup);
 router.post("/login", login);
