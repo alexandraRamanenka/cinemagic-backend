@@ -12,8 +12,33 @@ module.exports.cleanUserFields = req => {
   newUser.role = "user";
   return newUser;
 };
+
+const filterForRole = (user, role) => {
+  switch (role) {
+    case "admin":
+      return user;
+    case "user":
+      return {
+        login: user.login,
+        email: user.email,
+        avatar: user.avatar
+      };
+    default:
+      return {
+        login: user.login,
+        avatar: user.avatar
+      };
+  }
+};
+
 module.exports.createUser = handlersFactory.createOne(User);
 
 module.exports.findAllUsers = handlersFactory.getAll(User);
 
-module.exports.getUserById = handlersFactory.getOne(User, "userId");
+module.exports.getUserById = handlersFactory.getOne(
+  User,
+  "userId",
+  filterForRole
+);
+
+module.exports.deleteUser = handlersFactory.deleteOne(User, "userId");
