@@ -8,5 +8,6 @@ router.use("/users", require("./usersRoutes"));
 router.use("/films", require("./filmRoutes"));
 router.use("/cinema", require("./cinemaRoutes"));
 router.use("/services", require("./servicesRoutes"));
+router.use("/seat_types", require("./seatTypesRoutes"));
 
 module.exports = router;
