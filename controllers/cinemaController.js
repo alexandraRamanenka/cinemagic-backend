@@ -1,4 +1,4 @@
-const Cinema = require("../models/user");
+const Cinema = require("../models/cinema");
 const catchAsync = require("../utiles/catchAsync");
 const AppError = require("../utiles/appError");
 const handlersFactory = require("./handlersFactory");

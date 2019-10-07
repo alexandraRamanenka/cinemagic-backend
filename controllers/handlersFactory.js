@@ -59,9 +59,11 @@ module.exports.getOne = (Model, key, filterFunc) => {
 
 module.exports.updateOne = (Model, key, forbiddenFields) => {
   return catchAsync(async (req, res, next) => {
-    for (let key of forbiddenFields) {
-      if (req.body[key]) {
-        delete req.body[key];
+    if (forbiddenFields) {
+      for (let key of forbiddenFields) {
+        if (req.body[key]) {
+          delete req.body[key];
+        }
       }
     }
     const document = await Model.findOneAndUpdate(

@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const {
   createCinema,
-  findAllCinemas,
+  findAllCinema,
   getCinemaById,
   deleteCinema,
   updateCinema
@@ -10,12 +10,12 @@ const { authenticate, restrictTo } = require("../controllers/authController");
 
 router
   .route("/")
-  .get(findAllCinemas)
+  .get(findAllCinema)
   .post(authenticate, restrictTo(["admin"]), createCinema);
 router
   .route("/:cinemaId")
   .get(getCinemaById)
   .patch(authenticate, restrictTo(["admin"]), updateCinema)
-  .delete(authenticate, restrictTo["admin"], deleteCinema);
+  .delete(authenticate, restrictTo(["admin"]), deleteCinema);
 
 module.exports = router;
