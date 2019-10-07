@@ -62,3 +62,5 @@ typings/
 
 # key files
 .key
+
+dev-data/
