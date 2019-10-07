@@ -1,0 +1,15 @@
+{
+	"name": "Hero",
+	"country": "Russia",
+	"genre": ["thriller", "action"],
+	"year": "2019",
+	"language": "Russian",
+	"restriction": 12,
+	"description": "Andrei was trained 15 years ago in a special school of the Foreign Intelligence Service, where agents were trained from teenagers. In the early 2000s, the project was closed, and the main character has long settled in one of the European cities and no longer remembers Russia.",
+	"trailer": "https://www.kinopoisk.ru/film/1115467/",
+	"poster": "https://www.kinopoisk.ru/images/film_big/1115467.jpg",
+	"rate": 5.3,
+	"duration": 120,
+	"hireStartDate": "2019-09-26",
+	"hireEndDate": "2020-09-25"
+}
