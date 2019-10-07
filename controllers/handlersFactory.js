@@ -49,7 +49,7 @@ module.exports.getOne = (Model, key, filterFunc) => {
       );
     }
     const userRole = req.user ? req.user.role : "guest";
-    document = filterFunc(document, userRole);
+    document = filterFunc ? filterFunc(document, userRole) : document;
     res.status(200).json({
       status: "success",
       data: document
@@ -59,9 +59,11 @@ module.exports.getOne = (Model, key, filterFunc) => {
 
 module.exports.updateOne = (Model, key, forbiddenFields) => {
   return catchAsync(async (req, res, next) => {
-    for (let key of forbiddenFields) {
-      if (req.body[key]) {
-        delete req.body[key];
+    if (forbiddenFields) {
+      for (let key of forbiddenFields) {
+        if (req.body[key]) {
+          delete req.body[key];
+        }
       }
     }
     const document = await Model.findOneAndUpdate(
