@@ -1,6 +1,8 @@
 const { Schema, model } = require("mongoose");
 const mongoose = require("mongoose");
 const Session = require("./session");
+const SeatType = require("./seatType");
+const Service = require("./service");
 const BlockedSeat = mongoose.model("BlockedSeat");
 
 const reservationSchema = new Schema({
@@ -39,7 +41,8 @@ const reservationSchema = new Schema({
       }
     }
   ],
-  date: { type: Date, default: Date.now(), set: v => Date.now() }
+  date: { type: Date, default: Date.now(), set: v => Date.now() },
+  price: { type: Number }
 });
 
 async function checkSeat(seat) {
@@ -57,21 +60,22 @@ async function checkSeat(seat) {
   return line.numberOfSeats >= seat && !blocked;
 }
 
-reservationSchema.virtual("price").get(async function() {
-  this.populate("sessionId")
-    .populate({
-      path: "seats",
-      populate: { path: "lineId", populate: { path: "typeId" } }
-    })
-    .populate({ path: "services", populate: { path: "serviceId" } });
-  let price = this.sessionId.price;
+reservationSchema.pre("save", async function(next) {
+  let session = await Session.findById(this.sessionId).populate("hallId");
+  let price = session.price;
   for (let seat of this.seats) {
-    price += seat.lineId.typeId.price;
+    let seatType = await SeatType.findById(
+      session.hallId.seatsSchema.id(seat.lineId).typeId
+    );
+    price += seatType.price;
   }
-  for (let serv in this.services) {
-    price += serv.serviceId.price * serv.amount;
+  for (let serv of this.services) {
+    let service = await Service.findById(serv.serviceId);
+    price += service.price * serv.amount;
   }
-  return price;
+
+  this.price = price;
+  next();
 });
 
 module.exports = new model("Reservation", reservationSchema);

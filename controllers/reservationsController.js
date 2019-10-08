@@ -7,12 +7,11 @@ const Session = require("../models/session");
 const checkSeat = catchAsync(async (req, res, next) => {
   if (req.body.seats || req.body.sessionId) {
     for (let seat of req.body.seats) {
-      console.log(seat);
       let reservations = await Reservation.find({
         sessionId: req.body.sessionId
       });
+
       for (let reserv of reservations) {
-        console.log(reserv);
         for (let seatRes of reserv.seats) {
           if (
             seatRes.lineId == seat.lineId &&
