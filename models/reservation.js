@@ -60,7 +60,7 @@ async function checkSeat(seat) {
   return line.numberOfSeats >= seat && !blocked;
 }
 
-reservationSchema.pre("save", async function(next) {
+const getPrice = async function(next) {
   let session = await Session.findById(this.sessionId).populate("hallId");
   let price = session.price;
   for (let seat of this.seats) {
@@ -76,6 +76,8 @@ reservationSchema.pre("save", async function(next) {
 
   this.price = price;
   next();
-});
+};
+
+reservationSchema.pre("save", getPrice);
 
 module.exports = new model("Reservation", reservationSchema);
