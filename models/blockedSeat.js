@@ -12,7 +12,7 @@ const blockedSeatSchema = new Schema({
     ref: "Session",
     require: [true, "Session Id is required"]
   },
-  lineId: { type: Schema.Types.ObjectId, require: [true, "Line is required"] },
+  line: { type: Number, require: [true, "Line is required"] },
   seatNumber: {
     type: Number,
     require: [true, "Seat is required"]

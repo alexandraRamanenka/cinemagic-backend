@@ -4,6 +4,7 @@ const Session = require("./session");
 const SeatType = require("./seatType");
 const Service = require("./service");
 const BlockedSeat = mongoose.model("BlockedSeat");
+const AppError = require("../utiles/appError");
 
 const reservationSchema = new Schema({
   userId: {
@@ -18,14 +19,13 @@ const reservationSchema = new Schema({
   },
   seats: [
     {
-      lineId: {
-        type: Schema.Types.ObjectId,
+      line: {
+        type: Number,
         require: [true, "Line is required"]
       },
       seatNumber: {
         type: Number,
-        require: [true, "Seat is required"],
-        validate: { validator: checkSeat }
+        require: [true, "Seat is required"]
       }
     }
   ],
@@ -45,27 +45,46 @@ const reservationSchema = new Schema({
   price: { type: Number }
 });
 
-async function checkSeat(seat) {
-  let parent = this.parent();
-  const session = await Session.findById(parent.sessionId).populate({
+const checkSeats = async function(next) {
+  const session = await Session.findById(this.sessionId).populate({
     path: "hallId"
   });
-  const line = await session.hallId.seatsSchema.id(this.lineId);
 
-  const blocked = await BlockedSeat.findOne({
-    lineId: this.lineId,
-    seatNumber: seat
-  });
+  for (let seat of this.seats) {
+    if (seat.line > session.hallId.seatsSchema.length || seat.line < 1) {
+      return next(
+        new AppError(`Line with number ${seat.line} not exists`, 400)
+      );
+    }
 
-  return line.numberOfSeats >= seat && !blocked;
-}
+    const line = session.hallId.seatsSchema[seat.line - 1];
+
+    const blocked = await BlockedSeat.findOne({
+      line: seat.line,
+      seatNumber: seat.seatNumber
+    });
+
+    if (
+      line.numberOfSeats < seat.seatNumber ||
+      seat.seatNumber < 1 ||
+      blocked
+    ) {
+      return next(
+        new AppError(
+          `Seat with number ${seat.seatNumber} at line ${seat.line} is unavailable`,
+          400
+        )
+      );
+    }
+  }
+};
 
 const getPrice = async function(next) {
   let session = await Session.findById(this.sessionId).populate("hallId");
   let price = session.price;
   for (let seat of this.seats) {
     let seatType = await SeatType.findById(
-      session.hallId.seatsSchema.id(seat.lineId).typeId
+      session.hallId.seatsSchema[seat.line].typeId
     );
     price += seatType.price;
   }
@@ -78,6 +97,7 @@ const getPrice = async function(next) {
   next();
 };
 
+reservationSchema.pre("save", checkSeats);
 reservationSchema.pre("save", getPrice);
 
 module.exports = new model("Reservation", reservationSchema);

@@ -13,7 +13,7 @@ const checkSeat = catchAsync(async (req, res, next) => {
       for (let reserv of reservations) {
         for (let seatRes of reserv.seats) {
           if (
-            seatRes.lineId == seat.lineId &&
+            seatRes.line == seat.line &&
             seatRes.seatNumber == seat.seatNumber
           ) {
             return next(new AppError("Seat is already reserved"));
