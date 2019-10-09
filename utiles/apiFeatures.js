@@ -6,6 +6,11 @@ class ApiFeatures {
 
   filter() {
     const queryObj = { ...this.queryString };
+    const excludedFields = ["page", "sort", "limit", "fields"];
+    excludedFields.forEach(key => {
+      delete queryObj[key];
+    });
+
     let queryString = JSON.stringify(queryObj);
     queryString = queryString.replace(
       /\b(gte|gt|lte|lt)\b/g,
@@ -13,6 +18,15 @@ class ApiFeatures {
     );
 
     this.query.find(JSON.parse(queryString));
+    return this;
+  }
+
+  sort() {
+    if (this.queryString.sort) {
+      const sortBy = this.queryString.sort.split(",").join(" ");
+      this.query = this.query.sort(sortBy);
+    }
+
     return this;
   }
 }

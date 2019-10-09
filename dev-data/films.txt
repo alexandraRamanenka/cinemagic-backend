@@ -13,3 +13,49 @@
 	"hireStartDate": "2019-09-26",
 	"hireEndDate": "2020-09-25"
 }
+{
+	"name": "Deadpool 2",
+	"country": "United States",
+	"genre": ["superhero", "action"],
+	"year": "2018",
+	"language": "English",
+	"restriction": 18,
+	"description": "After fighting organized crime as the mercenary Deadpool for two years, Wade Wilson fails to kill one of his targets on his anniversary with Vanessa, his girlfriend. That night, after the pair decide to start a family together, the target tracks Wilson down and inadvertently kills Vanessa. Wilson kills the man in revenge, and blaming himself for her death attempts to commit suicide six weeks later by blowing himself up. Wilson has a vision of Vanessa in the afterlife, but the pieces of his body remain alive and are put back together by Colossus. Wilson is left with only a Skee-Ball token, an anniversary gift, as a final memento of Vanessa.",
+	"trailer": "https://www.kinopoisk.ru/film/961715/video/148748/",
+	"poster": "https://www.kinopoisk.ru/images/film_big/961715.jpg",
+	"rate": 7.3,
+	"duration": 119,
+	"hireStartDate": "2019-10-01",
+	"hireEndDate": "2020-10-02"
+}
+{
+	"name": "Aladdin",
+	"country": "United States",
+	"genre": ["cartoon", "adventure", "action", "family"],
+	"year": "2018",
+	"language": "English",
+	"restriction": 6,
+	"description": "After fighting organized crime as the mercenary Deadpool for two years, Wade Wilson fails to kill one of his targets on his anniversary with Vanessa, his girlfriend. That night, after the pair decide to start a family together, the target tracks Wilson down and inadvertently kills Vanessa. Wilson kills the man in revenge, and blaming himself for her death attempts to commit suicide six weeks later by blowing himself up. Wilson has a vision of Vanessa in the afterlife, but the pieces of his body remain alive and are put back together by Colossus. Wilson is left with only a Skee-Ball token, an anniversary gift, as a final memento of Vanessa.",
+	"trailer": "https://www.kinopoisk.ru/film/961715/video/148748/",
+	"poster": "https://www.kinopoisk.ru/images/film_big/961715.jpg",
+	"rate": 7.3,
+	"duration": 104,
+	"hireStartDate": "2019-10-05",
+	"hireEndDate": "2020-11-01"
+}
+{
+	"name": "How to Train Your Dragon: The Hidden World",
+	"country": "United States",
+	"genre": ["musicl", "adventure"],
+	"year": "2018",
+	"language": "English",
+	"restriction": 6,
+	"description": "One year after the events of the previous film, Hiccup, Toothless and their fellow dragon-riders continue to rescue captured dragons in order to bring them to Berk and its bustling dragon and human utopia. Their efforts have resulted in the island becoming overpopulated with dragons. In a response to the overcrowding, Hiccup desires to find the "Hidden World", a safe haven for dragons spoken of by his late father Stoick. Meanwhile, a white female dragon similar to Night Furys in ability and appearance, held captive by warlords, is given to infamous dragon hunter Grimmel the Grisly as bait for him to capture Toothless for the warlords' use as an alpha.",
+	"trailer": "https://www.kinopoisk.ru/film/961715/video/148748/",
+	"poster": "https://www.kinopoisk.ru/images/film_big/961715.jpg",
+	"rate": 7.7,
+	"duration": 128,
+	"hireStartDate": "2019-10-05",
+	"hireEndDate": "2020-11-01"
+}
+
