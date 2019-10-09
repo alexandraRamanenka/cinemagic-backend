@@ -13,5 +13,6 @@ router.use("/halls", require("./hallRoutes"));
 router.use("/sessions", require("./sessionRoutes"));
 router.use("/blocked_seats", require("./blockedSeatRoutes"));
 router.use("/reservations", require("./reservationRoutes"));
+router.use("/auth", require("./authRoutes"));
 
 module.exports = router;

@@ -7,12 +7,7 @@ const {
   updateUser,
   getCurrentUser
 } = require("../controllers/usersController");
-const {
-  signup,
-  login,
-  authenticate,
-  restrictTo
-} = require("../controllers/authController");
+const { authenticate, restrictTo } = require("../controllers/authController");
 
 router
   .route("/")
@@ -25,8 +20,5 @@ router
   .get(authenticate, getUserById)
   .delete(authenticate, restrictTo(["admin"]), deleteUser)
   .patch(authenticate, restrictTo(["admin"]), updateUser);
-
-router.post("/signup", signup);
-router.post("/login", login);
 
 module.exports = router;
