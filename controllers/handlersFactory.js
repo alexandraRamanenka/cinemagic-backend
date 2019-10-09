@@ -18,7 +18,8 @@ module.exports.getAll = Model => {
     const features = new ApiFeatures(Model.find(), req.query)
       .filter()
       .sort()
-      .selectFields();
+      .selectFields()
+      .paginate();
     const documents = await features.query;
 
     res.status(200).json({
