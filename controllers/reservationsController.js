@@ -3,28 +3,53 @@ const AppError = require("../utiles/appError");
 const catchAsync = require("../utiles/catchAsync");
 const handlersFactory = require("./handlersFactory");
 
-const checkSeat = catchAsync(async (req, res, next) => {
-  if (req.body.seats || req.body.sessionId) {
-    for (let seat of req.body.seats) {
-      let reservations = await Reservation.find({
-        sessionId: req.body.sessionId
-      });
+const checkSeats = catchAsync(async (req, res, next) => {
+  let seats, sessionId;
+  if (req.method === "POST") {
+    seats = req.body.seats;
+    sessionId = req.body.sessionId;
+  }
+  if (req.method === "PATCH") {
+    const reservation = await Reservation.findById(req.params.reservationId);
+    seats = req.body.seats || reservation.seats;
+    sessionId = req.body.sessionId || reservation.sessionId;
+  }
 
-      for (let reserv of reservations) {
-        for (let seatRes of reserv.seats) {
-          if (
-            seatRes.line == seat.line &&
-            seatRes.seatNumber == seat.seatNumber
-          ) {
-            return next(new AppError("Seat is already reserved"));
-          }
-        }
-      }
-    }
+  if (!(await checkAllSeats(sessionId, seats, req.params.reservationId))) {
+    return next(new AppError("Seat is already reserved", 400));
   }
   next();
 });
-module.exports.checkSeat = checkSeat;
+
+async function checkSeat(sessionId, seat, reservationId) {
+  let reservations = await Reservation.find({
+    sessionId: sessionId
+  });
+
+  for (let reserv of reservations) {
+    for (let seatRes of reserv.seats) {
+      if (
+        seatRes.line == seat.line &&
+        seatRes.seatNumber == seat.seatNumber &&
+        reserv._id !== reservationId
+      ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+async function checkAllSeats(sessionId, seats, reservationId) {
+  for (let seat of seats) {
+    if (!(await checkSeat(sessionId, seat))) {
+      return false;
+    }
+  }
+  return true;
+}
+module.exports.checkSeats = checkSeats;
 module.exports.findAllReservations = handlersFactory.getAll(Reservation);
 module.exports.getReservationById = handlersFactory.getOne(
   Reservation,
