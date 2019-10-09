@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 const lineSchema = new Schema({
-  cinema: { type: Schema.Types.ObjectId, ref: "SeatType}" },
+  seatType: { type: Schema.Types.ObjectId, ref: "SeatType}" },
 
   numberOfSeats: {
     type: Number,

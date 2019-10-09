@@ -84,7 +84,7 @@ const getPrice = async function(next) {
   let price = session.price;
   for (let seat of this.seats) {
     let seatType = await SeatType.findById(
-      session.hall.seatsSchema[seat.line].cinema
+      session.hall.seatsSchema[seat.line].seatType
     );
     price += seatType.price;
   }
