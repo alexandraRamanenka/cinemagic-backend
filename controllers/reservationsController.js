@@ -31,7 +31,7 @@ async function checkSeat(session, seat, reservationId) {
       if (
         seatRes.line == seat.line &&
         seatRes.seatNumber == seat.seatNumber &&
-        reserv._id !== reservationId
+        reserv._id.toString() !== reservationId
       ) {
         return false;
       }

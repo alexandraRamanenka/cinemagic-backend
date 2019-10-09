@@ -10,22 +10,50 @@ module.exports.createSession = handlersFactory.createOne(Session);
 module.exports.updateSession = handlersFactory.updateOne(Session, "sessionId");
 module.exports.deleteSession = handlersFactory.deleteOne(Session, "sessionId");
 module.exports.validateSession = catchAsync(async (req, res, next) => {
-  const film = await Film.findById(req.body.film);
-  if (!film) {
-    return next(new AppError("Film is not found", 404));
+  let filmId, session, dateTime, hallId;
+  if (req.method === "POST") {
+    filmId = req.body.film;
+    dateTime = new Date(req.body.dateTime);
+    hallId = req.body.hall;
   }
-  const dateTime = new Date(req.body.dateTime);
+  if (req.method === "PATCH") {
+    session = await Session.findById(req.params.sessionId);
+    filmId = session.film;
+    dateTime = session.dateTime;
+    hallId = session.hall;
+  }
+
+  if (!(await checkFilmAvailability(filmId, dateTime))) {
+    return next(
+      new AppError("Invalid date or film is unavailable for this date", 400)
+    );
+  }
+
+  if (!(await checkHallAvailability(hallId, dateTime, req.params.sessionId))) {
+    return next(new AppError("Hall is unavailable for this date", 400));
+  }
+  next();
+});
+
+async function checkFilmAvailability(filmId, date) {
+  const film = await Film.findById(filmId);
+  if (!film) {
+    return false;
+  }
+  const dateTime = new Date(date);
   if (
     film.hireStartDate > dateTime ||
     dateTime > film.hireEndDate ||
     dateTime < Date.now()
   ) {
-    return next(
-      new AppError("Invalid date or film is unavailable for this date", 400)
-    );
+    return false;
   }
+  return true;
+}
+
+async function checkHallAvailability(hallId, dateTime, sessionId) {
   const sessions = await Session.find({
-    hall: req.body.hall,
+    hall: hallId,
     dateTime: {
       $gte: dateTime
     }
@@ -33,12 +61,12 @@ module.exports.validateSession = catchAsync(async (req, res, next) => {
 
   for (let session of sessions) {
     const endTime = new Date(
-      dateTime.getTime() + session.film.duration * 60 * 1000
+      session.dateTime.getTime() + session.film.duration * 60 * 1000
     );
-    if (session.dateTime <= endTime) {
-      return next(new AppError("Hall is unavailable for this date", 400));
+    if (session.dateTime <= endTime && session._id.toString() !== sessionId) {
+      console.log(session + " " + endTime + " " + dateTime);
+      return false;
     }
   }
-
-  next();
-});
+  return true;
+}

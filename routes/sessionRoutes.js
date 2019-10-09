@@ -18,6 +18,6 @@ router
   .route("/:sessionId")
   .get(getSessionById)
   .delete(authenticate, restrictTo(["admin"]), deleteSession)
-  .patch(authenticate, restrictTo(["admin"]), updateSession);
+  .patch(authenticate, restrictTo(["admin"]), validateSession, updateSession);
 
 module.exports = router;
