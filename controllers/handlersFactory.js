@@ -15,7 +15,10 @@ module.exports.createOne = Model => {
 
 module.exports.getAll = Model => {
   return catchAsync(async (req, res, next) => {
-    const features = new ApiFeatures(Model.find(), req.query).filter().sort();
+    const features = new ApiFeatures(Model.find(), req.query)
+      .filter()
+      .sort()
+      .selectFields();
     const documents = await features.query;
 
     res.status(200).json({
