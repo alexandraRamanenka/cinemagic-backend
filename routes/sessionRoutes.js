@@ -4,13 +4,14 @@ const {
   findAllSessions,
   getSessionById,
   deleteSession,
-  updateSession
+  updateSession,
+  validateSession
 } = require("../controllers/sessionsController");
 const { authenticate, restrictTo } = require("../controllers/authController");
 
 router
   .route("/")
-  .post(authenticate, restrictTo(["admin"]), createSession)
+  .post(authenticate, restrictTo(["admin"]), validateSession, createSession)
   .get(findAllSessions);
 
 router
