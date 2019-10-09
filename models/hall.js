@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 const lineSchema = require("./line");
 
 const hallSchema = new Schema({
-  cinemaId: {
+  cinema: {
     type: Schema.Types.ObjectId,
     ref: "Cinema",
     required: [true, "Cinema is required"]

@@ -7,12 +7,12 @@ const BlockedSeat = mongoose.model("BlockedSeat");
 const AppError = require("../utiles/appError");
 
 const reservationSchema = new Schema({
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: "User",
     require: [true, "User Id is required"]
   },
-  sessionId: {
+  session: {
     type: Schema.Types.ObjectId,
     ref: "Session",
     require: [true, "Session Id Id is required"]
@@ -31,7 +31,7 @@ const reservationSchema = new Schema({
   ],
   services: [
     {
-      serviceId: {
+      service: {
         type: Schema.Types.ObjectId,
         ref: "Service"
       },
@@ -46,18 +46,18 @@ const reservationSchema = new Schema({
 });
 
 const checkSeats = async function(next) {
-  const session = await Session.findById(this.sessionId).populate({
-    path: "hallId"
+  const session = await Session.findById(this.session).populate({
+    path: "hall"
   });
 
   for (let seat of this.seats) {
-    if (seat.line > session.hallId.seatsSchema.length || seat.line < 1) {
+    if (seat.line > session.hall.seatsSchema.length || seat.line < 1) {
       return next(
         new AppError(`Line with number ${seat.line} not exists`, 400)
       );
     }
 
-    const line = session.hallId.seatsSchema[seat.line - 1];
+    const line = session.hall.seatsSchema[seat.line - 1];
 
     const blocked = await BlockedSeat.findOne({
       line: seat.line,
@@ -80,16 +80,16 @@ const checkSeats = async function(next) {
 };
 
 const getPrice = async function(next) {
-  let session = await Session.findById(this.sessionId).populate("hallId");
+  let session = await Session.findById(this.session).populate("hall");
   let price = session.price;
   for (let seat of this.seats) {
     let seatType = await SeatType.findById(
-      session.hallId.seatsSchema[seat.line].typeId
+      session.hall.seatsSchema[seat.line].cinema
     );
     price += seatType.price;
   }
   for (let serv of this.services) {
-    let service = await Service.findById(serv.serviceId);
+    let service = await Service.findById(serv.service);
     price += service.price * serv.amount;
   }
 

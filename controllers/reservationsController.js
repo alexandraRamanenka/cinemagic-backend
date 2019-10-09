@@ -4,26 +4,26 @@ const catchAsync = require("../utiles/catchAsync");
 const handlersFactory = require("./handlersFactory");
 
 const checkSeats = catchAsync(async (req, res, next) => {
-  let seats, sessionId;
+  let seats, session;
   if (req.method === "POST") {
     seats = req.body.seats;
-    sessionId = req.body.sessionId;
+    session = req.body.session;
   }
   if (req.method === "PATCH") {
     const reservation = await Reservation.findById(req.params.reservationId);
     seats = req.body.seats || reservation.seats;
-    sessionId = req.body.sessionId || reservation.sessionId;
+    session = req.body.session || reservation.session;
   }
 
-  if (!(await checkAllSeats(sessionId, seats, req.params.reservationId))) {
+  if (!(await checkAllSeats(session, seats, req.params.reservationId))) {
     return next(new AppError("Seat is already reserved", 400));
   }
   next();
 });
 
-async function checkSeat(sessionId, seat, reservationId) {
+async function checkSeat(session, seat, reservationId) {
   let reservations = await Reservation.find({
-    sessionId: sessionId
+    session: session
   });
 
   for (let reserv of reservations) {
@@ -41,9 +41,9 @@ async function checkSeat(sessionId, seat, reservationId) {
   return true;
 }
 
-async function checkAllSeats(sessionId, seats, reservationId) {
+async function checkAllSeats(session, seats, reservationId) {
   for (let seat of seats) {
-    if (!(await checkSeat(sessionId, seat))) {
+    if (!(await checkSeat(session, seat))) {
       return false;
     }
   }

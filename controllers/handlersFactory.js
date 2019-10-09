@@ -44,9 +44,14 @@ module.exports.deleteOne = (Model, key) => {
   });
 };
 
-module.exports.getOne = (Model, key, filterFunc) => {
+module.exports.getOne = (Model, key, filterFunc, populationOpt) => {
   return catchAsync(async (req, res, next) => {
-    let document = await Model.findById(req.params[key]);
+    let query = await Model.findById(req.params[key]);
+    if (populationOpt) {
+      query.populate(populationOpt);
+    }
+    let document = await query;
+
     if (!document) {
       return next(
         new AppError(`Document with id ${req.params[key]} not found`, 404)

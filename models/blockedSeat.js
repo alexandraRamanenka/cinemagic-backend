@@ -2,12 +2,12 @@ const { Schema } = require("mongoose");
 const mongoose = require("mongoose");
 
 const blockedSeatSchema = new Schema({
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: "User",
     require: [true, "User Id is required"]
   },
-  sessionId: {
+  session: {
     type: Schema.Types.ObjectId,
     ref: "Session",
     require: [true, "Session Id is required"]

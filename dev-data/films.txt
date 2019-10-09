@@ -39,7 +39,7 @@
 	"trailer": "https://www.kinopoisk.ru/film/961715/video/148748/",
 	"poster": "https://www.kinopoisk.ru/images/film_big/961715.jpg",
 	"rate": 7.3,
-	"duration": 104,
+	"duration": 128,
 	"hireStartDate": "2019-10-05",
 	"hireEndDate": "2020-11-01"
 }
@@ -51,11 +51,11 @@
 	"language": "English",
 	"restriction": 6,
 	"description": "One year after the events of the previous film, Hiccup, Toothless and their fellow dragon-riders continue to rescue captured dragons in order to bring them to Berk and its bustling dragon and human utopia. Their efforts have resulted in the island becoming overpopulated with dragons. In a response to the overcrowding, Hiccup desires to find the "Hidden World", a safe haven for dragons spoken of by his late father Stoick. Meanwhile, a white female dragon similar to Night Furys in ability and appearance, held captive by warlords, is given to infamous dragon hunter Grimmel the Grisly as bait for him to capture Toothless for the warlords' use as an alpha.",
-	"trailer": "https://www.kinopoisk.ru/film/961715/video/148748/",
-	"poster": "https://www.kinopoisk.ru/images/film_big/961715.jpg",
+	"trailer": "https://www.kinopoisk.ru/film/706655/",
+	"poster": "https://www.kinopoisk.ru/images/film_big/706655.jpg",
 	"rate": 7.7,
-	"duration": 128,
-	"hireStartDate": "2019-10-05",
+	"duration": 104,
+	"hireStartDate": "2019-10-01",
 	"hireEndDate": "2020-11-01"
 }
 

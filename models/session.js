@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 const sessionSchema = new Schema({
-  filmId: {
+  film: {
     type: Schema.Types.ObjectId,
     ref: "Film",
     require: [true, "Film is required"]
@@ -10,7 +10,7 @@ const sessionSchema = new Schema({
     type: Date,
     require: [true, "Date and time are required"]
   },
-  hallId: {
+  hall: {
     type: Schema.Types.ObjectId,
     ref: "Hall",
     require: [true, "Hall is required"]
