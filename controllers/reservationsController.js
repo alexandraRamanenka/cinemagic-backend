@@ -3,7 +3,7 @@ const AppError = require("../utiles/appError");
 const catchAsync = require("../utiles/catchAsync");
 const handlersFactory = require("./handlersFactory");
 
-const checkSeats = catchAsync(async (req, res, next) => {
+const validateSeats = catchAsync(async (req, res, next) => {
   let seats, session;
   if (req.method === "POST") {
     seats = req.body.seats;
@@ -43,13 +43,13 @@ async function checkSeat(session, seat, reservationId) {
 
 async function checkAllSeats(session, seats, reservationId) {
   for (let seat of seats) {
-    if (!(await checkSeat(session, seat))) {
+    if (!(await checkSeat(session, seat, reservationId))) {
       return false;
     }
   }
   return true;
 }
-module.exports.checkSeats = checkSeats;
+module.exports.validateSeats = validateSeats;
 module.exports.findAllReservations = handlersFactory.getAll(Reservation);
 module.exports.getReservationById = handlersFactory.getOne(
   Reservation,

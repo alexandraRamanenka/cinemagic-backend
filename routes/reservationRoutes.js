@@ -5,19 +5,19 @@ const {
   getReservationById,
   deleteReservation,
   updateReservation,
-  checkSeats
+  validateSeats
 } = require("../controllers/reservationsController");
 const { authenticate, restrictTo } = require("../controllers/authController");
 
 router
   .route("/")
-  .post(authenticate, checkSeats, createReservation)
+  .post(authenticate, validateSeats, createReservation)
   .get(authenticate, restrictTo(["admin"]), findAllReservations);
 
 router
   .route("/:reservationId")
   .get(authenticate, getReservationById)
   .delete(authenticate, restrictTo(["admin"]), deleteReservation)
-  .patch(authenticate, restrictTo(["admin"]), checkSeats, updateReservation);
+  .patch(authenticate, restrictTo(["admin"]), validateSeats, updateReservation);
 
 module.exports = router;
