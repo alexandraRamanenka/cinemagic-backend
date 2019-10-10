@@ -99,7 +99,7 @@ const getPrice = async function(next) {
 
 reservationSchema.pre("save", checkSeats);
 reservationSchema.pre("save", getPrice);
-reservationSchema.pre(/^find/, function(next) {
+reservationSchema.pre("findOne", function(next) {
   this.populate({
     path: "session",
     select: ["film", "dateTime", "hall"]
