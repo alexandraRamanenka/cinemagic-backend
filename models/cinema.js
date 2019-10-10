@@ -1,9 +1,25 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const cinemaSchema = new mongoose.Schema({
-  city: { type: String, required: [true, "The city is required"] },
-  name: { type: String, required: [true, "Each cinema must have a name"] },
-  adress: { type: String, required: [true, "The adress is required"] }
+const cinemaSchema = new Schema(
+  {
+    city: { type: String, required: [true, "The city is required"] },
+    name: { type: String, required: [true, "Each cinema must have a name"] },
+    adress: { type: String, required: [true, "The adress is required"] }
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
+);
+
+cinemaSchema.virtual("halls", {
+  ref: "Hall",
+  localField: "_id",
+  foreignField: "cinema"
 });
 
-module.exports = new mongoose.model("Cinema", cinemaSchema);
+cinemaSchema.pre("findOne", function(next) {
+  this.populate("halls");
+  next();
+});
+module.exports = new model("Cinema", cinemaSchema);
