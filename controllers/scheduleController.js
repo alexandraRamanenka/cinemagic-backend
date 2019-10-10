@@ -17,3 +17,10 @@ module.exports.getCinemaSchedule = catchAsync(async (req, res, next) => {
   }
   return next();
 });
+
+module.exports.setFilmFilter = (req, res, next) => {
+  if (req.params.filmId) {
+    req.query.film = req.params.filmId;
+  }
+  return next();
+};
