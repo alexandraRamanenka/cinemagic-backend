@@ -48,10 +48,19 @@ module.exports.signup = catchAsync(async (req, res, next) => {
   sendToken(newUser, 201, res);
 });
 
+module.exports.logout = (req, res, next) => {
+  const cookieOpt = {
+    expires: new Date(Date.now() + 5 * 1000),
+    secure: process.env.NODE_ENV === 'production' ? true : false,
+    httpOnly: true
+  };
+  res.cookie('jwt', '', cookieOpt);
+  return res.status(200).json({ status: 'success' });
+};
+
 module.exports.login = catchAsync(async (req, res, next) => {
   const { password, login } = req.body;
 
-  console.log(req.body);
   if (!password || !login) {
     return next(new AppError('Login and password required', 401));
   }
