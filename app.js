@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const app = express();
 const AppError = require('./utiles/appError');
@@ -6,13 +7,9 @@ const globalErrorController = require('./controllers/globalErrorController.js');
 const routes = require('./routes');
 
 //Parsing middleware
-<<<<<<< HEAD
-
-=======
 app.use(cors());
->>>>>>> e5b62d498e38a3b0493db420c8ceea67cf0ea4fe
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser());
 
 app.use('/', routes);
 

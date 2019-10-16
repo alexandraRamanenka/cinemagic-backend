@@ -69,11 +69,12 @@ var cookieExtractor = function(req) {
   if (req && req.cookies) {
     token = req.cookies['jwt'];
   }
+
   return token;
 };
 
 const passportOpt = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: cookieExtractor,
   secretOrKey: fs.readFileSync('jwtRS256.key.pub'),
   jsonWebTokenOptions: jwtOpt
 };
