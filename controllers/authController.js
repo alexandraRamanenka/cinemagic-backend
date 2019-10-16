@@ -51,6 +51,7 @@ module.exports.signup = catchAsync(async (req, res, next) => {
 module.exports.login = catchAsync(async (req, res, next) => {
   const { password, login } = req.body;
 
+  console.log(req.body);
   if (!password || !login) {
     return next(new AppError('Login and password required', 401));
   }
