@@ -34,7 +34,7 @@ const handleDuplicateDBFields = err => {
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
   console.log(value);
 
-  const message = `An item with value of ${value} isalready exists!`;
+  const message = `An item with value of ${value} is already exists!`;
   return new AppError(message, 400);
 };
 
