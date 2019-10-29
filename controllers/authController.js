@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const passport = require('passport');
 const { Strategy, ExtractJwt } = require('passport-jwt');
+const cookieParser = require('cookie-parser');
 
 const jwtOpt = {
   algorithm: 'RS256',
@@ -26,11 +27,12 @@ const sendToken = (user, statusCode, res) => {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
-    secure: process.env.NODE_ENV === 'production' ? true : false,
+    // secure: process.env.NODE_ENV === 'production' ? true : false,
     httpOnly: true
   };
 
   res.cookie('jwt', token, cookieOpt);
+  console.log('cookie sended ' + token);
 
   res.status(statusCode).json({
     status: 'success',
@@ -78,7 +80,7 @@ var cookieExtractor = function(req) {
   if (req && req.cookies) {
     token = req.cookies['jwt'];
   }
-
+  console.log(cookieParser.JSONCookies(req.cookies));
   return token;
 };
 
