@@ -42,8 +42,7 @@ sessionSchema.virtual('freeSeats').get(function() {
 
 sessionSchema.pre(/^find/, function(next) {
   this.populate({
-    path: 'film',
-    select: ['name', 'duration', 'language', 'restriction']
+    path: 'film'
   })
     .populate('reservations')
     .populate('hall');

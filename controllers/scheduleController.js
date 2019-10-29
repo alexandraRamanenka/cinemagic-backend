@@ -1,9 +1,6 @@
-const AppError = require('../utiles/appError');
 const catchAsync = require('../utiles/catchAsync');
-const mongoose = require('mongoose');
 const Hall = require('../models/hall');
 const Session = require('../models/session');
-const handlersFactory = require('./handlersFactory');
 
 module.exports.getCinemaSchedule = catchAsync(async (req, res, next) => {
   if (req.params.cinemaId) {
