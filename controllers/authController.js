@@ -80,7 +80,6 @@ var cookieExtractor = function(req) {
   if (req && req.cookies) {
     token = req.cookies['jwt'];
   }
-  console.log(cookieParser.JSONCookies(req.cookies));
   return token;
 };
 

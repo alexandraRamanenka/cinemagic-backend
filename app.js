@@ -6,8 +6,16 @@ const AppError = require('./utiles/appError');
 const globalErrorController = require('./controllers/globalErrorController.js');
 const routes = require('./routes');
 
+let corsOptions = {
+  origin: function(origin, callback) {
+    var isWhitelisted = process.env.ORIGINS_WHITE_LIST.indexOf(origin) !== -1;
+    callback(null, isWhitelisted);
+  },
+  credentials: true
+};
+
 //Parsing middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
