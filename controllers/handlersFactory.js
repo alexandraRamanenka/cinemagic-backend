@@ -1,13 +1,13 @@
-const AppError = require("../utiles/appError");
-const catchAsync = require("../utiles/catchAsync");
-const ApiFeatures = require("../utiles/apiFeatures");
+const AppError = require('../utiles/appError');
+const catchAsync = require('../utiles/catchAsync');
+const ApiFeatures = require('../utiles/apiFeatures');
 
 module.exports.createOne = Model => {
   return catchAsync(async (req, res, next) => {
     const document = await Model.create(req.body);
 
     res.status(201).json({
-      status: "success",
+      status: 'success',
       data: document
     });
   });
@@ -23,7 +23,7 @@ module.exports.getAll = Model => {
     const documents = await features.query;
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: documents
     });
   });
@@ -39,7 +39,7 @@ module.exports.deleteOne = (Model, key) => {
       );
     }
     res.status(200).json({
-      status: "success"
+      status: 'success'
     });
   });
 };
@@ -57,10 +57,10 @@ module.exports.getOne = (Model, key, filterFunc, populationOpt) => {
         new AppError(`Document with id ${req.params[key]} not found`, 404)
       );
     }
-    const userRole = req.user ? req.user.role : "guest";
+    const userRole = req.user ? req.user.role : 'guest';
     document = filterFunc ? filterFunc(document, userRole) : document;
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: document
     });
   });
@@ -88,7 +88,7 @@ module.exports.updateOne = (Model, key, forbiddenFields) => {
     }
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: document
     });
   });
