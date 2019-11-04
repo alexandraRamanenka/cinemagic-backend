@@ -6,7 +6,7 @@ class ApiFeatures {
 
   filter() {
     const queryObj = { ...this.queryString };
-    const excludedFields = ["page", "sort", "limit", "fields"];
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'populate'];
     excludedFields.forEach(key => {
       delete queryObj[key];
     });
@@ -23,7 +23,7 @@ class ApiFeatures {
 
   sort() {
     if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(",").join(" ");
+      const sortBy = this.queryString.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
     }
 
@@ -32,10 +32,10 @@ class ApiFeatures {
 
   selectFields() {
     if (this.queryString.fields) {
-      const fields = this.queryString.fields.split(",").join(" ");
+      const fields = this.queryString.fields.split(',').join(' ');
       this.query = this.query.select(fields);
     } else {
-      this.query = this.query.select("-__v");
+      this.query = this.query.select('-__v');
     }
 
     return this;
@@ -50,6 +50,15 @@ class ApiFeatures {
 
     return this;
   }
+
+  // populate() {
+  //   const queryObj = { ...this.queryString };
+
+  //   let queryString = JSON.stringify(queryObj.populate);
+  //   this.query = this.query.populate(JSON.parse(queryString));
+
+  //   return this;
+  // }
 }
 
 module.exports = ApiFeatures;

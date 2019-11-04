@@ -45,7 +45,7 @@ sessionSchema.pre(/^find/, function(next) {
     path: 'film'
   })
     .populate('reservations')
-    .populate('hall');
+    .populate({ path: 'hall', populate: { path: 'cinema' } });
   next();
 });
 
