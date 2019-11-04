@@ -1,7 +1,7 @@
-const User = require("../models/user");
-const catchAsync = require("../utiles/catchAsync");
-const AppError = require("../utiles/appError");
-const handlersFactory = require("./handlersFactory");
+const User = require('../models/user');
+const catchAsync = require('../utiles/catchAsync');
+const AppError = require('../utiles/appError');
+const handlersFactory = require('./handlersFactory');
 
 module.exports.cleanUserFields = req => {
   let newUser = req.body;
@@ -10,18 +10,19 @@ module.exports.cleanUserFields = req => {
   newUser.passwordConfirmation = req.body.passwordConfirmation || null;
   newUser.email = req.body.email || null;
   newUser.phone = req.body.phone || null;
-  newUser.role = "user";
+  newUser.role = 'user';
   return newUser;
 };
 
 const filterForRole = (user, role) => {
   switch (role) {
-    case "admin":
+    case 'admin':
       return user;
-    case "user":
+    case 'user':
       return {
         login: user.login,
         email: user.email,
+        phone: user.phone,
         avatar: user.avatar
       };
     default:
@@ -38,24 +39,46 @@ module.exports.findAllUsers = handlersFactory.getAll(User);
 
 module.exports.getUserById = handlersFactory.getOne(
   User,
-  "userId",
+  'userId',
   filterForRole
 );
 
-module.exports.deleteUser = handlersFactory.deleteOne(User, "userId");
-module.exports.updateUser = handlersFactory.updateOne(User, "userId");
+module.exports.deleteUser = handlersFactory.deleteOne(User, 'userId');
+module.exports.updateUser = handlersFactory.updateOne(User, 'userId');
 module.exports.getCurrentUser = catchAsync(async (req, res, next) => {
   if (!req.user) {
-    return next(new AppError("Please, log in or sign up", 401));
+    return next(new AppError('Please, log in or sign up', 401));
   }
 
   const user = await User.findById(req.user.id.toString());
   if (!user) {
-    return next(new AppError("User is no longer exists", 404));
+    return next(new AppError('User is no longer exists', 404));
   }
 
   res.status(200).json({
-    status: "succcess",
+    status: 'succcess',
     user
+  });
+});
+
+module.exports.updateMe = catchAsync(async (req, res, next) => {
+  if (!req.user) {
+    return next(new AppError('Please, log in or sign up', 401));
+  }
+
+  const userFields = filterForRole(req.body, 'user');
+  const user = await User.findOneAndUpdate({ _id: req.user._id }, userFields, {
+    new: true
+  });
+
+  if (!user) {
+    return next(
+      new AppError(`Document with id ${req.user._id} not found`, 404)
+    );
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: user
   });
 });
