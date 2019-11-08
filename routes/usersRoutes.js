@@ -8,6 +8,9 @@ const {
   getCurrentUser,
   updateMe
 } = require('../controllers/usersController');
+const {
+  getReservationsForCurrentUser
+} = require('../controllers/reservationsController');
 const { authenticate, restrictTo } = require('../controllers/authController');
 
 router
@@ -19,6 +22,9 @@ router
   .route('/me')
   .get(authenticate, getCurrentUser)
   .post(authenticate, updateMe);
+
+router.route('/me/history').get(authenticate, getReservationsForCurrentUser);
+
 router
   .route('/:userId')
   .get(authenticate, getUserById)

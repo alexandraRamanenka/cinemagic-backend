@@ -57,7 +57,7 @@ module.exports.getCurrentUser = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'succcess',
-    user
+    data: user
   });
 });
 

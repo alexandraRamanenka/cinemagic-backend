@@ -1,23 +1,23 @@
-const { Schema } = require("mongoose");
-const mongoose = require("mongoose");
+const { Schema } = require('mongoose');
+const mongoose = require('mongoose');
 
 const blockedSeatSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: "User",
-    require: [true, "User Id is required"]
+    ref: 'User',
+    require: [true, 'User Id is required']
   },
   session: {
     type: Schema.Types.ObjectId,
-    ref: "Session",
-    require: [true, "Session Id is required"]
+    ref: 'Session',
+    require: [true, 'Session Id is required']
   },
-  line: { type: Number, require: [true, "Line is required"] },
+  line: { type: Number, require: [true, 'Line is required'] },
   seatNumber: {
     type: Number,
-    require: [true, "Seat is required"]
+    require: [true, 'Seat is required']
   },
   timestamp: { type: Date, default: Date.now(), set: v => Date.now() }
 });
-
-module.exports = new mongoose.model("BlockedSeat", blockedSeatSchema);
+const BlockedSeat = new mongoose.model('BlockedSeat', blockedSeatSchema);
+module.exports = BlockedSeat;
