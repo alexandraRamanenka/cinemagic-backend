@@ -1,4 +1,4 @@
-const router = require("express").Router();
+const router = require('express').Router();
 const {
   createReservation,
   findAllReservations,
@@ -6,18 +6,18 @@ const {
   deleteReservation,
   updateReservation,
   validateSeats
-} = require("../controllers/reservationsController");
-const { authenticate, restrictTo } = require("../controllers/authController");
+} = require('../controllers/reservationsController');
+const { authenticate, restrictTo } = require('../controllers/authController');
 
 router
-  .route("/")
+  .route('/')
   .post(authenticate, validateSeats, createReservation)
-  .get(authenticate, restrictTo(["admin"]), findAllReservations);
+  .get(authenticate, restrictTo(['admin']), findAllReservations);
 
 router
-  .route("/:reservationId")
+  .route('/:reservationId')
   .get(authenticate, getReservationById)
-  .delete(authenticate, restrictTo(["admin"]), deleteReservation)
-  .patch(authenticate, restrictTo(["admin"]), validateSeats, updateReservation);
+  .delete(authenticate, restrictTo(['admin']), deleteReservation)
+  .patch(authenticate, restrictTo(['admin']), validateSeats, updateReservation);
 
 module.exports = router;

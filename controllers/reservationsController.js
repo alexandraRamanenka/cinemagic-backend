@@ -86,7 +86,9 @@ module.exports.getReservationsForCurrentUser = catchAsync(
       return next(new AppError('Please, log in or sign up', 401));
     }
 
-    const reservations = await Reservation.find({ user: req.user.id });
+    const reservations = await Reservation.find({ user: req.user.id })
+      .populate({ path: 'session', select: ['film', 'dateTime'] })
+      .populate({ path: 'services.service', select: ['name'] });
 
     res.status(200).json({
       status: 'succcess',
