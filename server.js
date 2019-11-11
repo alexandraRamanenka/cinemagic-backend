@@ -1,4 +1,6 @@
 require('dotenv').config();
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ port: process.env.WS_PORT });
 const mongoose = require('mongoose');
 const app = require('./app');
 
@@ -13,6 +15,12 @@ process.on('uncaughtException', err => {
 
 const server = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
+});
+
+wss.on('connection', ws => {
+  console.log('ws connection');
+  ws.on('message', message => console.log(`Recieved message: ${message}`));
+  ws.send('ho!');
 });
 
 //Db configuration

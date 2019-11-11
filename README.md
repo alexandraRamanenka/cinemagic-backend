@@ -8,4 +8,5 @@ JWT_EXPIRES_IN = '<expiration_time_of_jwt_token><m/h/d>'
 JWT_COOKIE_EXPIRES_IN = '<jwt_token_cookie_expiration_time_houres>'
 NODE_ENV = '<development/production>'
 PORT = <default=5000>
+WS_PORT = '<port for webSocket connection>'
 ORIGINS_WHITE_LIST = <[list_of_allowed_origins]>

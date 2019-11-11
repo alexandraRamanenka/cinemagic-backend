@@ -88,7 +88,7 @@ module.exports.getReservationsForCurrentUser = catchAsync(
 
     const reservations = await Reservation.find({ user: req.user.id })
       .populate({ path: 'session', select: ['film', 'dateTime'] })
-      .populate({ path: 'services.service', select: ['name'] });
+      .populate({ path: 'services.service', select: ['name', 'price'] });
 
     res.status(200).json({
       status: 'succcess',
