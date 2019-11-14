@@ -10,3 +10,4 @@ NODE_ENV = '<development/production>'
 PORT = <default=5000>
 WS_PORT = '<port for webSocket connection>'
 ORIGINS_WHITE_LIST = <[list_of_allowed_origins]>
+SEAT_BLOCKING_TIME = '<The time seat is blocked for after adding to reservation in seconds>'
