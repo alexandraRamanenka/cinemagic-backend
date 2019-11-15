@@ -22,10 +22,14 @@ const blockedSeatSchema = new Schema(
   { timestamps: true }
 );
 
-blockedSeatSchema.index(
-  { createdAt: 1 },
-  { expireAfterSeconds: process.env.SEAT_BLOCKING_TIME }
-);
+blockedSeatSchema.post('save', async function(next) {
+  const id = this._id;
+  const collection = this.collection;
+
+  setTimeout(function() {
+    collection.findOneAndDelete({ _id: id });
+  }, process.env.SEAT_BLOCKING_TIME * 1000);
+});
 
 const BlockedSeat = new mongoose.model('BlockedSeat', blockedSeatSchema);
 module.exports = BlockedSeat;

@@ -5,8 +5,8 @@ const cleanUserFields = require('./usersController').cleanUserFields;
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const passport = require('passport');
-const { Strategy, ExtractJwt } = require('passport-jwt');
-const cookieParser = require('cookie-parser');
+const { Strategy } = require('passport-jwt');
+const cookie = require('cookie');
 
 const jwtOpt = {
   algorithm: 'RS256',
@@ -111,4 +111,21 @@ module.exports.restrictTo = roles => {
     }
     next();
   };
+};
+
+module.exports.authenticateWsConnection = function(info, res) {
+  const cookies = cookie.parse(info.req.headers.cookie);
+
+  if (!cookies || !cookies['jwt']) {
+    res(false, 401, 'Unauthorized');
+  } else {
+    jwt.verify(cookies['jwt'], passportOpt.secretOrKey, (err, decoded) => {
+      if (err) {
+        res(false, 401, 'Unauthorized');
+      } else {
+        info.req.user = decoded;
+        res(true);
+      }
+    });
+  }
 };
