@@ -1,7 +1,11 @@
 require("dotenv").config();
 const { authenticateWsConnection } = require("./controllers/authController");
 const WebSocket = require("ws");
-const { notifyClients } = require("./controllers/webSocketController");
+const {
+  notifyClients,
+  addSeat,
+  removeSeat
+} = require("./controllers/webSocketController");
 const mongoose = require("mongoose");
 const app = require("./app");
 const http = require("http");
@@ -35,15 +39,16 @@ wss.on("connection", (ws, req) => {
   ws.on("message", wsEvent => {
     const wsMessage = JSON.parse(wsEvent);
     const { event, data } = JSON.parse(wsMessage);
+    data.user = user.id;
 
     switch (event) {
       case "addSeat":
-        console.log(`Add seat:`, data);
+        addSeat(data);
         wss.broadcast({ event: "seatAdded", data });
         break;
 
       case "removeSeat":
-        console.log(`Remove seat:`, data);
+        removeSeat(data);
         wss.broadcast({ event: "seatRemoved", data });
         break;
 

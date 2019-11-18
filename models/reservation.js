@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-const mongoose = require("mongoose");
 const Session = require("./session");
 const SeatType = require("./seatType");
 const Service = require("./service");
