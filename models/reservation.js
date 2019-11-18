@@ -1,31 +1,31 @@
-const { Schema, model } = require('mongoose');
-const mongoose = require('mongoose');
-const Session = require('./session');
-const SeatType = require('./seatType');
-const Service = require('./service');
-const BlockedSeat = require('../models/blockedSeat');
-const AppError = require('../utiles/appError');
+const { Schema, model } = require("mongoose");
+const mongoose = require("mongoose");
+const Session = require("./session");
+const SeatType = require("./seatType");
+const Service = require("./service");
+const BlockedSeat = require("../models/blockedSeat");
+const AppError = require("../utiles/appError");
 
 const reservationSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
-    require: [true, 'User Id is required']
+    ref: "User",
+    require: [true, "User Id is required"]
   },
   session: {
     type: Schema.Types.ObjectId,
-    ref: 'Session',
-    require: [true, 'Session Id Id is required']
+    ref: "Session",
+    require: [true, "Session Id Id is required"]
   },
   seats: [
     {
       line: {
         type: Number,
-        require: [true, 'Line is required']
+        require: [true, "Line is required"]
       },
       seatNumber: {
         type: Number,
-        require: [true, 'Seat is required']
+        require: [true, "Seat is required"]
       }
     }
   ],
@@ -33,7 +33,7 @@ const reservationSchema = new Schema({
     {
       service: {
         type: Schema.Types.ObjectId,
-        ref: 'Service'
+        ref: "Service"
       },
       amount: {
         type: Number,
@@ -47,7 +47,7 @@ const reservationSchema = new Schema({
 
 const checkSeats = async function(next) {
   const session = await Session.findById(this.session).populate({
-    path: 'hall'
+    path: "hall"
   });
 
   for (let seat of this.seats) {
@@ -80,7 +80,7 @@ const checkSeats = async function(next) {
 };
 
 const getPrice = async function(next) {
-  let session = await Session.findById(this.session).populate('hall');
+  let session = await Session.findById(this.session).populate("hall");
   let price = session.price;
   for (let seat of this.seats) {
     let seatType = await SeatType.findById(
@@ -97,14 +97,14 @@ const getPrice = async function(next) {
   next();
 };
 
-reservationSchema.pre('save', checkSeats);
-reservationSchema.pre('save', getPrice);
-reservationSchema.pre('findOne', function(next) {
+reservationSchema.pre("save", checkSeats);
+reservationSchema.pre("save", getPrice);
+reservationSchema.pre("findOne", function(next) {
   this.populate({
-    path: 'session',
-    select: ['film', 'dateTime', 'hall']
-  }).populate({ path: 'services.service', select: ['name'] });
+    path: "session",
+    select: ["film", "dateTime", "hall"]
+  }).populate({ path: "services.service", select: ["name"] });
   next();
 });
 
-module.exports = new model('Reservation', reservationSchema);
+module.exports = new model("Reservation", reservationSchema);

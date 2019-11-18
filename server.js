@@ -1,14 +1,15 @@
-require('dotenv').config();
-const { authenticateWsConnection } = require('./controllers/authController');
-const WebSocket = require('ws');
-const mongoose = require('mongoose');
-const app = require('./app');
-const http = require('http');
+require("dotenv").config();
+const { authenticateWsConnection } = require("./controllers/authController");
+const WebSocket = require("ws");
+const { notifyClients } = require("./controllers/webSocketController");
+const mongoose = require("mongoose");
+const app = require("./app");
+const http = require("http");
 
 const port = process.env.PORT || 5000;
 
-process.on('uncaughtException', err => {
-  console.log('UNCAUGHT EXEPTION. App crashed...');
+process.on("uncaughtException", err => {
+  console.log("UNCAUGHT EXEPTION. App crashed...");
   console.log(err.name, err.message, err);
 
   process.exit(1);
@@ -21,41 +22,47 @@ server.listen(port, () => {
 
 const wss = new WebSocket.Server({
   server,
-  verifyClient: authenticateWsConnection
+  verifyClient: authenticateWsConnection,
+  clientTracking: true
 });
 
-wss.on('connection', (ws, req) => {
-  console.log('Connection');
-  const user = req.user;
-  console.log(user);
+wss.broadcast = notifyClients;
 
-  ws.on('message', wsEvent => {
+wss.on("connection", (ws, req) => {
+  console.log("Connection");
+  const user = req.user;
+
+  ws.on("message", wsEvent => {
     const wsMessage = JSON.parse(wsEvent);
     const { event, data } = JSON.parse(wsMessage);
 
     switch (event) {
-      case 'addSeat':
-        console.log(`Add seat: ${data}`);
+      case "addSeat":
+        console.log(`Add seat:`, data);
+        wss.broadcast({ event: "seatAdded", data });
         break;
 
-      case 'removeSeat':
-        console.log(`Remove seat: ${data}`);
+      case "removeSeat":
+        console.log(`Remove seat:`, data);
+        wss.broadcast({ event: "seatRemoved", data });
         break;
 
-      case 'reserve':
+      case "reserve":
         console.log(`Reserve seats: ${data}`);
         break;
     }
   });
 
-  ws.on('close', (code, reason) => console.log(`Disconnected`));
+  ws.on("close", (code, reason) => {
+    console.log(`Disconnected`);
+  });
 });
 
 //Db configuration
 const db_connection_str = process.env.DB_URL.replace(
-  '<username>',
+  "<username>",
   process.env.DB_USER
-).replace('<password>', process.env.DB_PASSWORD);
+).replace("<password>", process.env.DB_PASSWORD);
 console.log(db_connection_str);
 mongoose.connect(
   db_connection_str,
@@ -65,12 +72,12 @@ mongoose.connect(
     useUnifiedTopology: true
   },
   () => {
-    console.log('Db connected');
+    console.log("Db connected");
   }
 );
 
-process.on('unhandledRejection', err => {
-  console.log('UNHANDLED REJECTION. App crashed...');
+process.on("unhandledRejection", err => {
+  console.log("UNHANDLED REJECTION. App crashed...");
   console.log(err.name, err.message);
   server.close(() => {
     process.exit(1);
