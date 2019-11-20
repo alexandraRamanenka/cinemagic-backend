@@ -7,8 +7,14 @@ module.exports.notifyClients = function(message) {
   }
 };
 
-module.exports.addSeat = async function(seat) {
+module.exports.addSeat = async function(seat, cb) {
   const blockedSeat = await BlockedSeat.create(seat);
+  setTimeout(function() {
+    BlockedSeat.findOneAndDelete({ _id: blockedSeat._id });
+    if (cb) {
+      cb();
+    }
+  }, process.env.SEAT_BLOCKING_TIME * 1000);
   return blockedSeat;
 };
 

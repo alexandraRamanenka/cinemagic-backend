@@ -43,7 +43,9 @@ wss.on("connection", (ws, req) => {
 
     switch (event) {
       case "addSeat":
-        addSeat(data);
+        addSeat(data, function() {
+          wss.broadcast({ event: "seatRemoved", data });
+        });
         wss.broadcast({ event: "seatAdded", data });
         break;
 
