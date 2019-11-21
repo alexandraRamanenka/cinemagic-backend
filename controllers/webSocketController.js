@@ -8,14 +8,18 @@ module.exports.notifyClients = function(message) {
 };
 
 module.exports.addSeat = async function(seat, cb) {
-  const blockedSeat = await BlockedSeat.create(seat);
-  setTimeout(function() {
-    BlockedSeat.findOneAndDelete({ _id: blockedSeat._id });
-    if (cb) {
-      cb();
-    }
-  }, process.env.SEAT_BLOCKING_TIME * 1000);
-  return blockedSeat;
+  try {
+    const blockedSeat = await BlockedSeat.create(seat);
+    setTimeout(async function() {
+      await BlockedSeat.findOneAndDelete({ _id: blockedSeat._id });
+      if (cb) {
+        cb();
+      }
+    }, process.env.SEAT_BLOCKING_TIME * 1000);
+    return blockedSeat;
+  } catch (error) {
+    return new AppError("Cannot add seat", 401);
+  }
 };
 
 module.exports.removeSeat = async function(seat) {
