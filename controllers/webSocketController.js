@@ -10,13 +10,12 @@ module.exports.notifyClients = function(message) {
 module.exports.addSeat = async function(seat, cb) {
   try {
     const blockedSeat = await BlockedSeat.create(seat);
-    setTimeout(async function() {
+    return setTimeout(async function() {
       await BlockedSeat.findOneAndDelete({ _id: blockedSeat._id });
       if (cb) {
         cb();
       }
     }, process.env.SEAT_BLOCKING_TIME * 1000);
-    return blockedSeat;
   } catch (error) {
     return new AppError("Cannot add seat", 401);
   }

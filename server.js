@@ -32,24 +32,35 @@ const wss = new WebSocket.Server({
 
 wss.broadcast = notifyClients;
 
+const addSeatHandler = async (callbacks, data) => {
+  const cancelCallback = await addSeat(data, function() {
+    wss.broadcast({ event: "seatRemoved", data });
+  });
+  console.log(cancelCallback);
+  callbacks[`${data.line}_${data.seatNumber}`] = cancelCallback;
+  wss.broadcast({ event: "seatAdded", data });
+};
+
 wss.on("connection", (ws, req) => {
   console.log("Connection");
   const user = req.user;
+  let callbacks = {};
 
-  ws.on("message", wsEvent => {
+  ws.on("message", async wsEvent => {
     const wsMessage = JSON.parse(wsEvent);
     const { event, data } = JSON.parse(wsMessage);
     data.user = user.id;
 
     switch (event) {
       case "addSeat":
-        addSeat(data, function() {
-          wss.broadcast({ event: "seatRemoved", data });
-        });
-        wss.broadcast({ event: "seatAdded", data });
+        await addSeatHandler(callbacks, data);
         break;
 
       case "removeSeat":
+        if (callbacks[`${data.line}_${data.seatNumber}`]) {
+          clearTimeout(callbacks[`${data.line}_${data.seatNumber}`]);
+          delete callbacks[`${data.line}_${data.seatNumber}`];
+        }
         removeSeat(data);
         wss.broadcast({ event: "seatRemoved", data });
         break;

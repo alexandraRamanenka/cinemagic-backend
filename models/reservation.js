@@ -63,10 +63,12 @@ const checkSeats = async function(next) {
       seatNumber: seat.seatNumber
     });
 
+    console.log(blocked);
+
     if (
       line.numberOfSeats < seat.seatNumber ||
       seat.seatNumber < 1 ||
-      blocked
+      (blocked && blocked.user.toString() !== this.user.toString())
     ) {
       return next(
         new AppError(
@@ -76,6 +78,8 @@ const checkSeats = async function(next) {
       );
     }
   }
+
+  next();
 };
 
 const getPrice = async function(next) {
