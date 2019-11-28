@@ -63,8 +63,6 @@ const checkSeats = async function(next) {
       seatNumber: seat.seatNumber
     });
 
-    console.log(blocked);
-
     if (
       line.numberOfSeats < seat.seatNumber ||
       seat.seatNumber < 1 ||

@@ -22,21 +22,23 @@ const getToken = user => {
 const sendToken = (user, statusCode, res) => {
   const token = getToken(user);
   user.password = undefined;
+  const expireTime = parseExpirationTime(process.env.JWT_COOKIE_EXPIRES_IN);
+
+  const expires = new Date(
+    Date.now() + expireTime
+  );
 
   const cookieOpt = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
-    // secure: process.env.NODE_ENV === 'production' ? true : false,
+    expires,
+    secure: process.env.NODE_ENV === 'production' ? true : false,
     httpOnly: true
   };
 
   res.cookie('jwt', token, cookieOpt);
-  console.log('cookie sended ' + token);
 
   res.status(statusCode).json({
     status: 'success',
-    token,
+    token: {token, expire: expireTime},
     data: user
   });
 };
@@ -129,3 +131,23 @@ module.exports.authenticateWsConnection = function(info, res) {
     });
   }
 };
+
+const parseExpirationTime = (time) => {
+  const unit = /[smhd]/i.exec(time);
+  const timeValue = parseInt(time);
+
+  if(unit) {
+    switch (unit[0]) {
+      case 's':
+        return timeValue * 1000;
+      case 'm':
+        return timeValue * 60 * 1000;
+      case 'h': 
+        return timeValue * 60 * 60 * 1000;
+      case 'd':
+        return timeValue * 24 * 60 * 60 * 1000;
+     }
+  }
+
+  return timeValue;
+}
