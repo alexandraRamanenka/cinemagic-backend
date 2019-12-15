@@ -24,13 +24,10 @@ const sendToken = (user, statusCode, res) => {
   user.password = undefined;
   const expireTime = parseExpirationTime(process.env.JWT_COOKIE_EXPIRES_IN);
 
-  const expires = new Date(
-    Date.now() + expireTime
-  );
+  const expires = new Date(Date.now() + expireTime);
 
   const cookieOpt = {
     expires,
-    secure: process.env.NODE_ENV === 'production' ? true : false,
     httpOnly: true
   };
 
@@ -38,7 +35,7 @@ const sendToken = (user, statusCode, res) => {
 
   res.status(statusCode).json({
     status: 'success',
-    token: {token, expire: expireTime},
+    token: { token, expire: expireTime },
     data: user
   });
 };
@@ -53,7 +50,6 @@ module.exports.signup = catchAsync(async (req, res, next) => {
 module.exports.logout = (req, res, next) => {
   const cookieOpt = {
     expires: new Date(Date.now() + 5 * 1000),
-    secure: process.env.NODE_ENV === 'production' ? true : false,
     httpOnly: true
   };
   res.cookie('jwt', '', cookieOpt);
@@ -132,22 +128,52 @@ module.exports.authenticateWsConnection = function(info, res) {
   }
 };
 
-const parseExpirationTime = (time) => {
+module.exports.verifyUser = (req, res, next) => {
+  const cookies = req.cookies;
+  const user = req.body.user;
+
+  if (!cookies || !cookies['jwt']) {
+    return next(new AppError('Unauthorized', 401));
+  } else {
+    jwt.verify(cookies['jwt'], passportOpt.secretOrKey, (err, decoded) => {
+      if (err) {
+        return next(new AppError('Invalid token, log in again', 401));
+      } else {
+        if (!user || user.id !== decoded.id) {
+          return next(new AppError('Unauthorized', 401));
+        }
+        return res.status(200).json({ status: 'success' });
+      }
+    });
+  }
+};
+
+const verifyToken = token => {
+  jwt.verify(token, passportOpt.secretOrKey, (err, decoded) => {
+    if (err) {
+      return false;
+    } else {
+      return decoded;
+    }
+  });
+};
+
+const parseExpirationTime = time => {
   const unit = /[smhd]/i.exec(time);
   const timeValue = parseInt(time);
 
-  if(unit) {
+  if (unit) {
     switch (unit[0]) {
       case 's':
         return timeValue * 1000;
       case 'm':
         return timeValue * 60 * 1000;
-      case 'h': 
+      case 'h':
         return timeValue * 60 * 60 * 1000;
       case 'd':
         return timeValue * 24 * 60 * 60 * 1000;
-     }
+    }
   }
 
   return timeValue;
-}
+};
