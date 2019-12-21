@@ -4,7 +4,8 @@ const {
   findAllFilms,
   getFilmById,
   deleteFilm,
-  updateFilm
+  updateFilm,
+  setBestFilmsQuery
 } = require('../controllers/filmsController');
 const { authenticate, restrictTo } = require('../controllers/authController');
 const sessionRoutes = require('./sessionRoutes');
@@ -14,6 +15,8 @@ router
   .route('/')
   .post(authenticate, restrictTo(['admin']), createFilm)
   .get(findAllFilms);
+
+router.get('/best', setBestFilmsQuery, findAllFilms);
 
 router.use('/:filmId/sessions', setFilmFilter, sessionRoutes);
 router

@@ -18,7 +18,7 @@ cinemaSchema.virtual('halls', {
   foreignField: 'cinema'
 });
 
-cinemaSchema.pre('findOne', function(next) {
+cinemaSchema.pre(/^find/, function(next) {
   this.populate('halls');
   next();
 });

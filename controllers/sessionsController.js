@@ -1,22 +1,22 @@
-const Session = require("../models/session");
-const Film = require("../models/film");
-const AppError = require("../utiles/appError");
-const catchAsync = require("../utiles/catchAsync");
-const handlersFactory = require("./handlersFactory");
+const Session = require('../models/session');
+const Film = require('../models/film');
+const AppError = require('../utiles/appError');
+const catchAsync = require('../utiles/catchAsync');
+const handlersFactory = require('./handlersFactory');
 
 module.exports.findAllSessions = handlersFactory.getAll(Session);
-module.exports.getSessionById = handlersFactory.getOne(Session, "sessionId");
+module.exports.getSessionById = handlersFactory.getOne(Session, 'sessionId');
 module.exports.createSession = handlersFactory.createOne(Session);
-module.exports.updateSession = handlersFactory.updateOne(Session, "sessionId");
-module.exports.deleteSession = handlersFactory.deleteOne(Session, "sessionId");
+module.exports.updateSession = handlersFactory.updateOne(Session, 'sessionId');
+module.exports.deleteSession = handlersFactory.deleteOne(Session, 'sessionId');
 module.exports.validateSession = catchAsync(async (req, res, next) => {
   let filmId, session, dateTime, hallId;
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     filmId = req.body.film;
     dateTime = new Date(req.body.dateTime);
     hallId = req.body.hall;
   }
-  if (req.method === "PATCH") {
+  if (req.method === 'PATCH') {
     session = await Session.findById(req.params.sessionId);
     filmId = session.film;
     dateTime = session.dateTime;
@@ -25,12 +25,12 @@ module.exports.validateSession = catchAsync(async (req, res, next) => {
 
   if (!(await checkFilmAvailability(filmId, dateTime))) {
     return next(
-      new AppError("Invalid date or film is unavailable for this date", 400)
+      new AppError('Invalid date or film is unavailable for this date', 400)
     );
   }
 
   if (!(await checkHallAvailability(hallId, dateTime, req.params.sessionId))) {
-    return next(new AppError("Hall is unavailable for this date", 400));
+    return next(new AppError('Hall is unavailable for this date', 400));
   }
   next();
 });
@@ -64,9 +64,29 @@ async function checkHallAvailability(hallId, dateTime, sessionId) {
       session.dateTime.getTime() + session.film.duration * 60 * 1000
     );
     if (session.dateTime <= endTime && session._id.toString() !== sessionId) {
-      console.log(session + " " + endTime + " " + dateTime);
+      console.log(session + ' ' + endTime + ' ' + dateTime);
       return false;
     }
   }
   return true;
 }
+
+module.exports.getTodaySessions = catchAsync(async (req, res, next) => {
+  const today = new Date('2019-10-12');
+  const tommorow = new Date(today);
+  tommorow.setDate(tommorow.getDate() + 1);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const sessions = await Session.find({
+    dateTime: {
+      $lte: tommorow,
+      $gte: yesterday
+    }
+  });
+
+  return res.status(200).json({
+    status: 'success',
+    data: sessions
+  });
+});

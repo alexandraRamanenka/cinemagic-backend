@@ -5,7 +5,8 @@ const {
   getSessionById,
   deleteSession,
   updateSession,
-  validateSession
+  validateSession,
+  getTodaySessions
 } = require('../controllers/sessionsController');
 const { authenticate, restrictTo } = require('../controllers/authController');
 
@@ -13,6 +14,8 @@ router
   .route('/')
   .post(authenticate, restrictTo(['admin']), validateSession, createSession)
   .get(findAllSessions);
+
+router.get('/today', getTodaySessions);
 
 router
   .route('/:sessionId')
