@@ -34,10 +34,14 @@ sessionSchema.virtual('reservations', {
 });
 
 sessionSchema.virtual('freeSeats').get(function() {
-  let reservedSeats = this.reservations.reduce((acc, res) => {
-    return (acc += res.seats.length);
-  }, 0);
-  return this.hall.seatsNumber - reservedSeats;
+  let reservedSeats = 0;
+  if (this.reservations) {
+    reservedSeats = this.reservations.reduce((acc, res) => {
+      return (acc += res.seats.length);
+    }, 0);
+  }
+  const seatsNumber = (this.hall && this.hall.seatsNumber) || 0;
+  return seatsNumber - reservedSeats;
 });
 
 sessionSchema.pre(/^find/, function(next) {

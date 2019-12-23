@@ -1,7 +1,7 @@
-const Cinema = require("../models/cinema");
-const catchAsync = require("../utiles/catchAsync");
-const AppError = require("../utiles/appError");
-const handlersFactory = require("./handlersFactory");
+const Cinema = require('../models/cinema');
+const catchAsync = require('../utiles/catchAsync');
+const AppError = require('../utiles/appError');
+const handlersFactory = require('./handlersFactory');
 
 module.exports.cleanCinemaFields = req => {
   let cinema = req.body;
@@ -13,9 +13,9 @@ module.exports.cleanCinemaFields = req => {
 
 const filterForRole = (cinema, role) => {
   switch (role) {
-    case "admin":
+    case 'admin':
 
-    case "user":
+    case 'user':
 
     default:
       return cinema;
@@ -28,9 +28,12 @@ module.exports.findAllCinema = handlersFactory.getAll(Cinema);
 
 module.exports.getCinemaById = handlersFactory.getOne(
   Cinema,
-  "cinemaId",
+  'cinemaId',
   filterForRole
 );
 
-module.exports.deleteCinema = handlersFactory.deleteOne(Cinema, "cinemaId");
-module.exports.updateCinema = handlersFactory.updateOne(Cinema, "cinemaId");
+module.exports.deleteCinema = handlersFactory.deleteOne(Cinema, 'cinemaId');
+module.exports.updateCinema = handlersFactory.updateOne(Cinema, 'cinemaId', [
+  'city',
+  'address'
+]);

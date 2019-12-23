@@ -1,6 +1,8 @@
 const { Schema, model } = require('mongoose');
 const lineSchema = require('./line');
 const Cinema = require('./cinema');
+const Reservation = require('mongoose').model('Reservation');
+const Session = require('mongoose').model('Session');
 const AppError = require('../utiles/appError');
 
 const hallSchema = new Schema(
@@ -33,6 +35,7 @@ async function getHallNumber(cinemaId) {
   const { halls } = cinema;
   return halls.length + 1;
 }
+
 async function checkHallNumber(number, cinemaId) {
   const cinema = await Cinema.findById(cinemaId, 'halls');
   const { halls } = cinema;
@@ -47,6 +50,37 @@ async function checkHallNumber(number, cinemaId) {
   return !isDuplicated;
 }
 
+async function isReadyToDeleteOrUpdate(hallId) {
+  const sessionsIds = await Session.find({
+    hall: hallId,
+    dateTime: { $gte: new Date() }
+  });
+
+  const reservations = await Reservation.find({
+    session: { $in: sessionsIds }
+  });
+
+  if (reservations && reservations.length) {
+    return false;
+  }
+  return true;
+}
+
+async function cleanHallSessionsAfterDelete(hallId) {
+  const result = await Session.deleteMany({ hall: hallId });
+}
+
+async function checkForActiveReservations(next) {
+  console.log({ query: this });
+  const ableToChange = await isReadyToDeleteOrUpdate(this._conditions._id);
+
+  if (ableToChange) {
+    await cleanHallSessionsAfterDelete(this._conditions._id);
+    next();
+  }
+  next(new AppError('Cannot change hall, cause it have active reservations!'));
+}
+
 hallSchema.virtual('seatsNumber').get(function() {
   let seats = this.seatsSchema.reduce((acc, line) => {
     return (acc += line.numberOfSeats);
@@ -54,8 +88,11 @@ hallSchema.virtual('seatsNumber').get(function() {
   return seats;
 });
 
+hallSchema.pre('deleteOne', checkForActiveReservations);
+hallSchema.pre('findOneAndUpdate', checkForActiveReservations);
+
 hallSchema.pre('save', async function(next) {
-  if (this.number === null) {
+  if (!this.number || this.number === null) {
     this.number = await getHallNumber(this.cinema);
     next();
   } else {

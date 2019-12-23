@@ -17,6 +17,7 @@ const sendErrorProd = (err, res) => {
     });
   } else {
     console.error('ERROR');
+    console.log({ err });
 
     res.status(500).json({
       status: 'error',
@@ -32,7 +33,6 @@ const handleCastError = err => {
 
 const handleDuplicateDBFields = err => {
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-  console.log(value);
 
   const message = `An item with value of ${value} is already exists!`;
   return new AppError(message, 400);

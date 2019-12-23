@@ -5,5 +5,7 @@ const handlersFactory = require('./handlersFactory');
 module.exports.findAllHalls = handlersFactory.getAll(Hall);
 module.exports.getHallById = handlersFactory.getOne(Hall, 'hallId');
 module.exports.createHall = handlersFactory.createOne(Hall);
-module.exports.updateHall = handlersFactory.updateOne(Hall, 'hallId');
+module.exports.updateHall = handlersFactory.updateOne(Hall, 'hallId', [
+  'cinema'
+]);
 module.exports.deleteHall = handlersFactory.deleteOne(Hall, 'hallId');

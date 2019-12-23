@@ -1,7 +1,10 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
-const lineSchema = new Schema({
-  seatType: { type: Schema.Types.ObjectId, ref: 'SeatType' },
+const lineSchema = new mongoose.Schema({
+  seatType: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SeatType'
+  },
 
   numberOfSeats: {
     type: Number,
