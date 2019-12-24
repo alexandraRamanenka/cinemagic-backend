@@ -19,7 +19,7 @@ module.exports.validateSession = catchAsync(async (req, res, next) => {
   if (req.method === 'PATCH') {
     session = await Session.findById(req.params.sessionId);
     filmId = session.film;
-    dateTime = session.dateTime;
+    dateTime =  session.dateTime;
     hallId = session.hall;
   }
 
@@ -63,8 +63,8 @@ async function checkHallAvailability(hallId, dateTime, sessionId) {
     const endTime = new Date(
       session.dateTime.getTime() + session.film.duration * 60 * 1000
     );
-    if (session.dateTime <= endTime && session._id.toString() !== sessionId) {
-      console.log(session + ' ' + endTime + ' ' + dateTime);
+    if (dateTime <= endTime && dateTime >= session.dateTime && session._id.toString() !== sessionId) {
+      console.log({session, dateTime, endTime});
       return false;
     }
   }
@@ -72,7 +72,7 @@ async function checkHallAvailability(hallId, dateTime, sessionId) {
 }
 
 module.exports.getTodaySessions = catchAsync(async (req, res, next) => {
-  const today = new Date('2019-10-12');
+  const today = new Date();
   const tommorow = new Date(today);
   tommorow.setDate(tommorow.getDate() + 1);
   const yesterday = new Date(today);
@@ -82,6 +82,21 @@ module.exports.getTodaySessions = catchAsync(async (req, res, next) => {
     dateTime: {
       $lte: tommorow,
       $gte: yesterday
+    }
+  });
+
+  return res.status(200).json({
+    status: 'success',
+    data: sessions
+  });
+});
+
+module.exports.getFutureSessions = catchAsync(async (req, res, next) => {
+  const today = new Date();
+
+  const sessions = await Session.find({
+    dateTime: {
+      $gte: today
     }
   });
 

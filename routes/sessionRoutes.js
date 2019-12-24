@@ -6,7 +6,8 @@ const {
   deleteSession,
   updateSession,
   validateSession,
-  getTodaySessions
+  getTodaySessions,
+  getFutureSessions
 } = require('../controllers/sessionsController');
 const { authenticate, restrictTo } = require('../controllers/authController');
 
@@ -16,6 +17,7 @@ router
   .get(findAllSessions);
 
 router.get('/today', getTodaySessions);
+router.get('/future', getFutureSessions);
 
 router
   .route('/:sessionId')

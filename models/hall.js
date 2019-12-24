@@ -71,7 +71,6 @@ async function cleanHallSessionsAfterDelete(hallId) {
 }
 
 async function checkForActiveReservations(next) {
-  console.log({ query: this });
   const ableToChange = await isReadyToDeleteOrUpdate(this._conditions._id);
 
   if (ableToChange) {
