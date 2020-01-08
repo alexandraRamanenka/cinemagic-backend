@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 const lineSchema = require('./line');
 const Cinema = require('./cinema');
-const Reservation = require('mongoose').model('Reservation');
+const Reservation = require('./reservation');
 const Session = require('mongoose').model('Session');
 const AppError = require('../utiles/appError');
 

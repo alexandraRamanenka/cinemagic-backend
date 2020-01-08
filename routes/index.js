@@ -1,5 +1,6 @@
 const express = require('express');
 let router = express.Router();
+const { clean } = require('./../utiles/cleanDb');
 
 router.get('/', (req, res) => {
   res.send('Welcome to Cinemagic!');
@@ -14,5 +15,6 @@ router.use('/sessions', require('./sessionRoutes'));
 router.use('/blocked_seats', require('./blockedSeatRoutes'));
 router.use('/reservations', require('./reservationRoutes'));
 router.use('/auth', require('./authRoutes'));
+router.get('/clean', clean);
 
 module.exports = router;

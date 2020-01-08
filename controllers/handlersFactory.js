@@ -29,7 +29,7 @@ module.exports.getAll = Model => {
   });
 };
 
-module.exports.deleteOne = (Model, key) => {
+module.exports.deleteOne = (Model, key, postDelete) => {
   return catchAsync(async (req, res, next) => {
     const result = await Model.deleteOne({ _id: req.params[key] });
 
@@ -38,6 +38,9 @@ module.exports.deleteOne = (Model, key) => {
         new AppError(`Document with id ${req.params[key]} not found`, 404)
       );
     }
+
+    postDelete && postDelete(req.params[key]);
+
     res.status(200).json({
       status: 'success'
     });
@@ -69,9 +72,9 @@ module.exports.getOne = (Model, key, filterFunc, populationOpt) => {
 module.exports.updateOne = (Model, key, forbiddenFields) => {
   return catchAsync(async (req, res, next) => {
     if (forbiddenFields) {
-      for (let key of forbiddenFields) {
-        if (req.body[key]) {
-          delete req.body[key];
+      for (let fieldKey of forbiddenFields) {
+        if (req.body[fieldKey]) {
+          delete req.body[fieldKey];
         }
       }
     }

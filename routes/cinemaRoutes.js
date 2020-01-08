@@ -4,7 +4,8 @@ const {
   findAllCinema,
   getCinemaById,
   deleteCinema,
-  updateCinema
+  updateCinema,
+  preDelete
 } = require('../controllers/cinemaController');
 const { authenticate, restrictTo } = require('../controllers/authController');
 const { getCinemaSchedule } = require('../controllers/scheduleController');
@@ -18,6 +19,6 @@ router
   .route('/:cinemaId')
   .get(getCinemaById)
   .patch(authenticate, restrictTo(['admin']), updateCinema)
-  .delete(authenticate, restrictTo(['admin']), deleteCinema);
+  .delete(authenticate, restrictTo(['admin']), preDelete, deleteCinema);
 
 module.exports = router;

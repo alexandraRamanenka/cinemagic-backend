@@ -2,6 +2,8 @@ const Cinema = require('../models/cinema');
 const catchAsync = require('../utiles/catchAsync');
 const AppError = require('../utiles/appError');
 const handlersFactory = require('./handlersFactory');
+const { getCinemaHalls, deleteCinemaHalls } = require('./hallsController');
+const { getHallsFutureReservations } = require('./reservationsController');
 
 module.exports.cleanCinemaFields = req => {
   let cinema = req.body;
@@ -32,10 +34,35 @@ module.exports.getCinemaById = handlersFactory.getOne(
   filterForRole
 );
 
-module.exports.deleteCinema = handlersFactory.deleteOne(Cinema, 'cinemaId');
+const postDelete = async cinemaId => {
+  await deleteCinemaHalls(cinemaId);
+};
+module.exports.postDelete = postDelete;
+
+module.exports.deleteCinema = handlersFactory.deleteOne(
+  Cinema,
+  'cinemaId',
+  postDelete
+);
 module.exports.updateCinema = handlersFactory.updateOne(Cinema, 'cinemaId', [
   'city',
   'address'
 ]);
 
-module.exports.preDelete = catchAsync(async (req, res, next) => {});
+module.exports.preDelete = catchAsync(async (req, res, next) => {
+  const halls = await getCinemaHalls(req.params.cinemaId);
+
+  for (let { _id } of halls) {
+    const reservations = await getHallsFutureReservations(_id);
+    if (reservations && reservations.length > 0) {
+      return next(
+        new AppError(
+          'Cinema is not allowed to be deleted, because it has active reservations!',
+          401
+        )
+      );
+    }
+  }
+
+  return next();
+});

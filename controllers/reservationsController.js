@@ -96,3 +96,8 @@ module.exports.getReservationsForCurrentUser = catchAsync(
     });
   }
 );
+
+module.exports.getHallsFutureReservations = async hallId => {
+  const reservations = await Reservation.find({ hall: hallId });
+  return reservations;
+};
