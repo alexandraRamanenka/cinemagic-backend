@@ -37,3 +37,5 @@ module.exports.updateCinema = handlersFactory.updateOne(Cinema, 'cinemaId', [
   'city',
   'address'
 ]);
+
+module.exports.preDelete = catchAsync(async (req, res, next) => {});

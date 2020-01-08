@@ -19,7 +19,7 @@ module.exports.validateSession = catchAsync(async (req, res, next) => {
   if (req.method === 'PATCH') {
     session = await Session.findById(req.params.sessionId);
     filmId = session.film;
-    dateTime =  session.dateTime;
+    dateTime = session.dateTime;
     hallId = session.hall;
   }
 
@@ -63,8 +63,12 @@ async function checkHallAvailability(hallId, dateTime, sessionId) {
     const endTime = new Date(
       session.dateTime.getTime() + session.film.duration * 60 * 1000
     );
-    if (dateTime <= endTime && dateTime >= session.dateTime && session._id.toString() !== sessionId) {
-      console.log({session, dateTime, endTime});
+    if (
+      dateTime <= endTime &&
+      dateTime >= session.dateTime &&
+      session._id.toString() !== sessionId
+    ) {
+      console.log({ session, dateTime, endTime });
       return false;
     }
   }

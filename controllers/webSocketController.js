@@ -1,5 +1,5 @@
-const BlockedSeat = require("../models/blockedSeat");
-const { AppError } = require("../utiles/appError");
+const BlockedSeat = require('../models/blockedSeat');
+const { AppError } = require('../utiles/appError');
 
 module.exports.notifyClients = function(message) {
   for (let client of this.clients) {
@@ -17,7 +17,7 @@ module.exports.addSeat = async function(seat, cb) {
       }
     }, process.env.SEAT_BLOCKING_TIME * 1000);
   } catch (error) {
-    return new AppError("Cannot add seat", 401);
+    return new AppError('Cannot add seat', 401);
   }
 };
 
