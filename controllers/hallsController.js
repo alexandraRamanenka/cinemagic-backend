@@ -1,7 +1,6 @@
 const Hall = require('mongoose').model('Hall');
-const AppError = require('../utiles/appError');
-const catchAsync = require('../utiles/catchAsync');
 const handlersFactory = require('./handlersFactory');
+const { deleteSessionsWithoutHalls } = require('./sessionsController');
 
 module.exports.findAllHalls = handlersFactory.getAll(Hall);
 module.exports.getHallById = handlersFactory.getOne(Hall, 'hallId');
@@ -15,5 +14,10 @@ module.exports.getCinemaHalls = async cinemaId => {
   return halls;
 };
 module.exports.deleteCinemaHalls = async cinemaId => {
-  await Hall.deleteMany({ cinema: cinemaId });
+  const deletedHalls = await Hall.deleteMany({ cinema: cinemaId });
+  if (deletedHalls.deletedCount > 0) {
+    let hallsIds = await Hall.find({}, '_id');
+    hallsIds = hallsIds.map(hall => hall._id);
+    deleteSessionsWithoutHalls(hallsIds);
+  }
 };

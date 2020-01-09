@@ -109,3 +109,7 @@ module.exports.getFutureSessions = catchAsync(async (req, res, next) => {
     data: sessions
   });
 });
+
+module.exports.deleteSessionsWithoutHalls = async hallsIds => {
+  await Session.deleteMany({ hall: { $nin: hallsIds } });
+};
