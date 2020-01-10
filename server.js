@@ -64,10 +64,6 @@ wss.on('connection', (ws, req) => {
         removeSeat(data);
         wss.broadcast({ event: 'seatRemoved', data });
         break;
-
-      case 'reserve':
-        console.log(`Reserve seats: ${data}`);
-        break;
     }
   });
 
@@ -81,7 +77,6 @@ const db_connection_str = process.env.DB_URL.replace(
   '<username>',
   process.env.DB_USER
 ).replace('<password>', process.env.DB_PASSWORD);
-console.log(db_connection_str);
 mongoose.connect(
   db_connection_str,
   {

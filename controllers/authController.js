@@ -112,7 +112,7 @@ module.exports.restrictTo = roles => {
 };
 
 module.exports.authenticateWsConnection = function(info, res) {
-  const cookies = cookie.parse(info.req.headers.cookie);
+  const cookies = cookie.parse(info.req.headers.cookie || '');
 
   if (!cookies || !cookies['jwt']) {
     res(false, 401, 'Unauthorized');

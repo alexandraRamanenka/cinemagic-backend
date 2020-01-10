@@ -68,8 +68,9 @@ module.exports.preDelete = catchAsync(async (req, res, next) => {
 });
 
 module.exports.getCinemaServices = catchAsync(async (req, res, next) => {
-  const cinema = await Cinema.findbyId(req.params.cinemaId).populate({
-    path: 'services'
+  const cinema = await Cinema.findById(req.params.cinemaId).populate({
+    path: 'services',
+    populate: { path: 'type' }
   });
 
   if (!cinema) {
@@ -77,7 +78,7 @@ module.exports.getCinemaServices = catchAsync(async (req, res, next) => {
   }
 
   const services = cinema.services;
-  res.staus(200).json({
+  res.status(200).json({
     data: services,
     status: 'success'
   });

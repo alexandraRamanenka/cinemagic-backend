@@ -68,7 +68,6 @@ async function checkHallAvailability(hallId, dateTime, sessionId) {
       dateTime >= session.dateTime &&
       session._id.toString() !== sessionId
     ) {
-      console.log({ session, dateTime, endTime });
       return false;
     }
   }
