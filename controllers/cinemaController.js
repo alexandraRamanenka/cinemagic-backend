@@ -66,3 +66,19 @@ module.exports.preDelete = catchAsync(async (req, res, next) => {
 
   return next();
 });
+
+module.exports.getCinemaServices = catchAsync(async (req, res, next) => {
+  const cinema = await Cinema.findbyId(req.params.cinemaId).populate({
+    path: 'services'
+  });
+
+  if (!cinema) {
+    return next(new AppError('Cannot find cinema with such id!', 404));
+  }
+
+  const services = cinema.services;
+  res.staus(200).json({
+    data: services,
+    status: 'success'
+  });
+});
