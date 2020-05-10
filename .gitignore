@@ -64,3 +64,5 @@ typings/
 .key
 
 dev-data/
+
+.idea/

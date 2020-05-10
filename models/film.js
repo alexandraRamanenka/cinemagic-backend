@@ -10,10 +10,19 @@ const filmSchema = new mongoose.Schema({
   description: { type: String },
   trailer: { type: String },
   poster: { type: String },
-  rate: { type: Number, default: 10.0 },
-  duration: { type: Number, required: [true, 'Duration is required'] },
-  hireStartDate: { type: Date, default: Date.now() },
-  hireEndDate: { type: Date, required: [true, 'End-of-hire date is required'] }
+  rate: {
+    type: Number,
+    default: 10.0,
+    validate: [
+      {
+        validator: minMaxRate,
+        msg: 'Illegal rate value! Must be greater than 0.0 and less than 10.0'
+      }
+    ]
+  },
+  duration: { type: Number, required: [true, 'Duration is required'] }
 });
+
+const minMaxRate = (val) => val <= 10 && val >= 0;
 
 module.exports = new mongoose.model('Film', filmSchema);

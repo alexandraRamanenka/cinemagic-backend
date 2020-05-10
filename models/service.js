@@ -6,7 +6,24 @@ const serviceSchema = new mongoose.Schema({
     ref: 'ServiceType',
     required: [true, 'Service type is required']
   },
+  name: {
+    type: mongoose.Schema.Types.String,
+    required: [true, 'Service name is required']
+  },
+  description: {
+    type: mongoose.Schema.Types.String
+  },
+  image: {
+    type: mongoose.Schema.Types.String
+  },
   price: { type: Number, required: [true, 'Price is required'] }
+});
+
+serviceSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'type'
+  });
+  next();
 });
 
 module.exports = new mongoose.model('Service', serviceSchema);

@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const lineSchema = new mongoose.Schema({
   seatType: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'SeatType'
+    ref: 'SeatType',
+    required: [true, 'Seat\'s type is required']
   },
 
   numberOfSeats: {

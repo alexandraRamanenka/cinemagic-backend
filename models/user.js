@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const USER_ROLES = [ 'admin', 'user' ];
+
 const userSchema = new mongoose.Schema(
   {
     login: {
@@ -21,11 +23,16 @@ const userSchema = new mongoose.Schema(
     },
     phone: String,
     avatar: String,
-    role: { type: String, enum: ['admin', 'user'], default: 'user' }
+    role: {
+      type: String,
+      enum: USER_ROLES,
+      default: 'user'
+    }
   },
   {
     toJSON: { virtuals: true },
-    toObject: { virtuals: true }
+    toObject: { virtuals: true },
+    timestamps: true
   }
 );
 

@@ -5,6 +5,8 @@ const Service = require('./service');
 const BlockedSeat = require('../models/blockedSeat');
 const AppError = require('../utiles/appError');
 
+const RESERVATION_STATUSES = ['payed', 'pending'];
+
 const reservationSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -40,9 +42,13 @@ const reservationSchema = new Schema({
       }
     }
   ],
-  date: { type: Date, default: Date.now(), set: v => Date.now() },
-  price: { type: Number }
-});
+  price: { type: Number },
+  status: {
+    type: String,
+    enum: RESERVATION_STATUSES,
+    default: 'pending'
+  }
+}, { timestamps: true });
 
 const checkSeats = async function(next) {
   const session = await Session.findById(this.session).populate({
