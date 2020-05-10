@@ -8,9 +8,9 @@ const {
   getCurrentUser,
   updateMe
 } = require('../controllers/usersController');
-const {
-  getReservationsForCurrentUser
-} = require('../controllers/reservationsController');
+const { attachFile } = require('../controllers/filesController');
+const { getReservationsForCurrentUser } =
+  require('../controllers/reservationsController');
 const { authenticate, restrictTo } = require('../controllers/authController');
 
 router
@@ -21,7 +21,7 @@ router
 router
   .route('/me')
   .get(authenticate, getCurrentUser)
-  .post(authenticate, updateMe);
+  .post(authenticate, attachFile('avatar'), updateMe);
 
 router.route('/me/history').get(authenticate, getReservationsForCurrentUser);
 
