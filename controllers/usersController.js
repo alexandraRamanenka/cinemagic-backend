@@ -66,7 +66,12 @@ module.exports.updateMe = catchAsync(async (req, res, next) => {
     return next(new AppError('Please, log in or sign up', 401));
   }
 
-  const userFields = filterForRole(req.body, 'user');
+  const avatar = req.file;
+  let userFields = req.body;
+  if (avatar) {
+    userFields.avatar = avatar.path.replace(/\\/g, "/");
+  }
+  userFields = filterForRole(req.body, 'user');
   const user = await User.findOneAndUpdate({ _id: req.user._id }, userFields, {
     new: true
   });

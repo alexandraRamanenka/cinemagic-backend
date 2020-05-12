@@ -5,7 +5,6 @@ const app = express();
 const AppError = require('./utiles/appError');
 const globalErrorController = require('./controllers/globalErrorController.js');
 const routes = require('./routes');
-const upload = require('express-fileupload');
 
 let corsOptions = {
   origin: function(origin, callback) {
@@ -19,10 +18,9 @@ let corsOptions = {
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
-app.use(upload());
 
-app.use(express.static(__dirname + '/public'));
 app.use('/', routes);
+app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
 
 app.all('*', (req, res, next) => {
   let err = new AppError(`Cant't find ${req.originalUrl}`, 404);

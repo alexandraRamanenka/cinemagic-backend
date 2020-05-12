@@ -23,6 +23,8 @@ const filmSchema = new mongoose.Schema({
   duration: { type: Number, required: [true, 'Duration is required'] }
 });
 
-const minMaxRate = (val) => val <= 10 && val >= 0;
+function minMaxRate(val) {
+  val <= 10 && val >= 0;
+}
 
 module.exports = new mongoose.model('Film', filmSchema);
