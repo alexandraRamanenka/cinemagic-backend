@@ -71,8 +71,8 @@ module.exports.login = catchAsync(async (req, res, next) => {
   sendToken(user, 200, res);
 });
 
-var cookieExtractor = function(req) {
-  var token = null;
+const cookieExtractor = (req) => {
+  let token = null;
   if (req && req.cookies) {
     token = req.cookies['jwt'];
   }
@@ -85,8 +85,7 @@ const passportOpt = {
   jsonWebTokenOptions: jwtOpt
 };
 
-passport.use(
-  new Strategy(passportOpt, function(payload, done) {
+passport.use(new Strategy(passportOpt, function(payload, done) {
     User.findOne({ _id: payload.id }, (err, user) => {
       if (err) {
         return done(err, false);
@@ -97,8 +96,7 @@ passport.use(
       user.password = undefined;
       return done(null, user);
     });
-  })
-);
+  }));
 
 module.exports.authenticate = passport.authenticate('jwt', { session: false });
 
@@ -126,7 +124,7 @@ module.exports.authenticateWsConnection = function(info, res) {
       }
     });
   }
-};
+}; //websocket
 
 module.exports.verifyUser = (req, res, next) => {
   const cookies = req.cookies;
@@ -146,16 +144,6 @@ module.exports.verifyUser = (req, res, next) => {
       }
     });
   }
-};
-
-const verifyToken = token => {
-  jwt.verify(token, passportOpt.secretOrKey, (err, decoded) => {
-    if (err) {
-      return false;
-    } else {
-      return decoded;
-    }
-  });
 };
 
 const parseExpirationTime = time => {

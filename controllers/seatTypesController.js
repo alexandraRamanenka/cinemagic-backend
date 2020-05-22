@@ -1,5 +1,4 @@
 const SeatType = require('../models/seatType');
-const AppError = require('../utiles/appError');
 const handlersFactory = require('./handlersFactory');
 
 module.exports.findAllSeatTypes = handlersFactory.getAll(SeatType);
